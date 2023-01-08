@@ -2,8 +2,15 @@
 
 <div>
     {% block body %}
-    <h2>Tracking my Fitness</h2>
-
+    <h2>Search Foods</h2>
+    <div>
+        <form action="{% url 'index' %}" method="POST" id="lookup">
+            {% csrf_token %}
+            <input type="text" name="food" id="food">
+            <input type="hidden" value="lookup" name="formtype">
+            <button id="submit">Search Food</button>
+        </form>
+    </div>
 
     {% endblock %}
 </div>
