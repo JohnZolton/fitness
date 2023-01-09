@@ -4,7 +4,7 @@
     {% block body %}
     <h2>Search Foods</h2>
     <div>
-        <form action="{% url 'index' %}" method="POST" id="lookup">
+        <form onSubmit='return false' action="{% url 'index' %}" method="POST" id="lookup">
             {% csrf_token %}
             <input type="text" name="food" id="food">
             <input type="hidden" value="lookup" name="formtype">

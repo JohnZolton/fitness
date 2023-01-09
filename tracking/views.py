@@ -18,9 +18,9 @@ def index(request):
 
         for item in data['foods']:
             print(item['description'])
-            for i in nutrients.values():
+            """for i in nutrients.values():
                 try:
                     print(item['foodNutrients'][i]['nutrientName'], item['foodNutrients'][i]['value'],item['foodNutrients'][i]['unitName'])
                 except IndexError:
-                    print(':)')
+                    print(':)')"""
         return render(request, 'index.html')
