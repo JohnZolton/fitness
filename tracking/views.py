@@ -16,11 +16,4 @@ def index(request):
         
         nutrients = {'protein': 0, 'carbs':2, 'fats': 1, 'fiber':9, 'calories':3}
 
-        for item in data['foods']:
-            print(item['description'])
-            """for i in nutrients.values():
-                try:
-                    print(item['foodNutrients'][i]['nutrientName'], item['foodNutrients'][i]['value'],item['foodNutrients'][i]['unitName'])
-                except IndexError:
-                    print(':)')"""
         return render(request, 'index.html')
