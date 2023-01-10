@@ -1,9 +1,19 @@
-{% extends "layout.html" %}
+{% extends "tracking/layout.html" %}
 
 <div>
     {% block body %}
+    {% if meals %}
+    <h2>Meal History</h2>
+    <div>
+        {% for meal in meals %}
+        <ul>{{meal.contents}}</ul>
+        {% endfor %}
+    </div>
+    {% endif %}
     <H2>Selected Foods</H2>
     <div id="meal-table-div" hidden>
+        <form action="{% url 'savemeal' %}" method="post">
+            {% csrf_token %}
         <table id="meal-table">
             <tr>
                 <th>Item</th>
@@ -15,8 +25,10 @@
             </tr>
             
         </table>
-        <button>Save Meal</button>
+        <button type="submit">Save Meal</button>
+        </form>
     </div>
+
     <h2>Search Foods</h2>
     <div>
         <form onSubmit='return false' action="{% url 'index' %}" method="POST" id="lookup">

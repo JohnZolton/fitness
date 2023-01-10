@@ -1,3 +1,5 @@
+var counter = 1
+
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('lookup').addEventListener("submit", search);
 })
@@ -9,7 +11,7 @@ function search(event) {
     let api = document.getElementById('key').value
     let url = 'https://api.nal.usda.gov/fdc/v1/foods/search?api_key='
     let suffix = '&query='
-    let food = document.querySelector('#food').value;
+    let food = document.querySelector('#food').value
     
     fetch(url + api + suffix + food)
     .then((response) => response.json())
@@ -72,14 +74,16 @@ function addfood(){
     let newitem = document.createElement('tr')
     newitem.innerHTML=`
     <td>${item}</td>
-    <td>${Math.round(protein*portion_factor)}</td>
-    <td>${Math.round(carbs*portion_factor)}</td>
-    <td>${Math.round(fats*portion_factor)}</td>
-    <td>${Math.round(fiber*portion_factor)}</td>
-    <td>${Math.round(cals*portion_factor)}</td>
-    `
+    <td id='protein'>${Math.round(protein*portion_factor)}</td>
+    <td id='carb'>${Math.round(carbs*portion_factor)}</td>
+    <td id='fat'>${Math.round(fats*portion_factor)}</td>
+    <td id='fiber'>${Math.round(fiber*portion_factor)}</td>
+    <td id='calories'>${Math.round(cals*portion_factor)}</td>
+    <input type='hidden' value='${item};${Math.round(protein*portion_factor)};${Math.round(carbs*portion_factor)};${Math.round(fats*portion_factor)};${Math.round(fiber*portion_factor)};${Math.round(cals*portion_factor)};${serving}' name='${counter}'>`
+
     document.getElementById('meal-table-div').style.display = 'block'
     document.getElementById('meal-table').appendChild(newitem)
+    counter ++
 }
 
 function hidechildren(parent) {
