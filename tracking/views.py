@@ -2,11 +2,14 @@ from django.shortcuts import render
 import requests
 import json
 import time
+import keys
 
-api_key = ''
+api_key = keys.api_key
+
 def index(request):
+    context = {'key':api_key}
     if request.method == 'GET':
-        return render(request, 'index.html')
+        return render(request, 'index.html', context)
         
     if request.method == 'POST':
         food = request.POST['food']
@@ -16,4 +19,4 @@ def index(request):
         
         nutrients = {'protein': 0, 'carbs':2, 'fats': 1, 'fiber':9, 'calories':3}
 
-        return render(request, 'index.html')
+        return render(request, 'index.html', context)

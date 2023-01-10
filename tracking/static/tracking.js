@@ -6,8 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function search(event) {
     hidechildren(document.getElementById('display-table'))
    
-
-    let api = ''
+    let api = document.getElementById('key').value
     let url = 'https://api.nal.usda.gov/fdc/v1/foods/search?api_key='
     let suffix = '&query='
     let food = document.querySelector('#food').value;
