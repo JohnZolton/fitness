@@ -19,14 +19,14 @@ function search(event) {
             //console.log(data['foods'][i]['foodNutrients'])
             let nutrients = ['203', '204', '205', '208', '291']
             let fooddata = data['foods'][i]['foodNutrients']
-            console.log(data['foods'][i])
+            //console.log(data['foods'][i])
             let protein = 0
             let carbs = 0
             let fats = 0
             let cals = 0
             let food_id = data['foods'][i]['finalFoodInputFoods']
             food_id.forEach(element => {
-                console.log(element['foodDescription'] + 'id: ' + element['id'])
+                //console.log(element['foodDescription'] + 'id: ' + element['id'])
             })
 
             fooddata.forEach(element => {
@@ -45,13 +45,41 @@ function search(event) {
             <td>${protein}</td>
             <td>${carbs}</td>
             <td>${fats}</td>
+            <td>${fiber}</td>
             <td>${cals}</td>
-            <td>${fiber}</td>`
+            <button id='${data['foods'][i]['fdcId']}'>Add</button>`
 
             document.getElementById("display-table").appendChild(newDiv)
+            document.getElementById(`${data['foods'][i]['fdcId']}`).addEventListener('click', addfood)
         }
         
     });
+}
+
+function addfood(){
+    let serving = prompt('Serving size (g): ')
+    var siblings = n => [...n.parentElement.children].filter(c=>c!=n)
+    let info = siblings(this)
+
+    let item = info[0].innerHTML
+    let protein = info[1].innerHTML
+    let carbs = info[3].innerHTML
+    let fats = info[2].innerHTML
+    let cals = info[5].innerHTML
+    let fiber = info[4].innerHTML
+    
+    portion_factor = serving / 100
+    let newitem = document.createElement('tr')
+    newitem.innerHTML=`
+    <td>${item}</td>
+    <td>${Math.round(protein*portion_factor)}</td>
+    <td>${Math.round(carbs*portion_factor)}</td>
+    <td>${Math.round(fats*portion_factor)}</td>
+    <td>${Math.round(fiber*portion_factor)}</td>
+    <td>${Math.round(cals*portion_factor)}</td>
+    `
+    document.getElementById('meal-table-div').style.display = 'block'
+    document.getElementById('meal-table').appendChild(newitem)
 }
 
 function hidechildren(parent) {
@@ -65,8 +93,8 @@ function hidechildren(parent) {
     <th>Protein</th>
     <th>Fats</th>
     <th>Carbs</th>
-    <th>Calories</th>
-    <th>Fiber</th>`
+    <th>Fiber</th>
+    <th>Calories</th>`
 
     document.getElementById("display-table").appendChild(newDiv)
 }

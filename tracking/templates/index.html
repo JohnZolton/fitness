@@ -2,6 +2,21 @@
 
 <div>
     {% block body %}
+    <H2>Selected Foods</H2>
+    <div id="meal-table-div" hidden>
+        <table id="meal-table">
+            <tr>
+                <th>Item</th>
+                <th>Protein</th>
+                <th>Carb</th>
+                <th>Fat</th>
+                <th>Fiber</th>
+                <th>Calories</th>
+            </tr>
+            
+        </table>
+        <button>Save Meal</button>
+    </div>
     <h2>Search Foods</h2>
     <div>
         <form onSubmit='return false' action="{% url 'index' %}" method="POST" id="lookup">
@@ -13,14 +28,6 @@
     </div>
     <div>
         <table id="display-table">
-            <tr id="heading">
-                <th>Food</th>
-                <th>Protein</th>
-                <th>Fats</th>
-                <th>Carbs</th>
-                <th>Calories</th>
-                <th>Fiber</th>
-            </tr>
         </table>
     </div>
     <input type="hidden" id="key" value="{{key}}">
