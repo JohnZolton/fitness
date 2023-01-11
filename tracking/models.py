@@ -4,8 +4,12 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     id = models.AutoField(primary_key=True)
+    protein_goal = models.IntegerField()
+    carb_goal = models.IntegerField(default=0)
+    fat_goal = models.IntegerField(default=0)
+    calorie_goal = models.IntegerField(default=0)
 
 class Meal(models.Model):
     account = models.ForeignKey(User, on_delete=models.CASCADE)
-    time = models.DateTimeField(auto_now_add=True)
+    time = models.DateField(auto_now_add=True)
     contents = models.TextField()

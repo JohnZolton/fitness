@@ -6,7 +6,7 @@ from django.db import IntegrityError
 from .models import *
 import requests
 import json
-import time
+import datetime
 import keys
 
 api_key = keys.api_key
@@ -60,21 +60,28 @@ def register(request):
 
 
 def index(request):
-    meals = Meal.objects.filter(account=request.user.id)
+    meals = Meal.objects.filter(account=request.user.id, time=datetime.date.today())
+    res = []
+    totals = [0,0,0,0,0]
+    for i in range(len(meals)):
+        meal_data = eval(meals[i].contents)
+        for food in meal_data:
+            res.append(food)
+            for i in range(1, len(food)-1):
+                totals[i-1] += int(food[i])
+
     context = {
         'key':api_key,
-        'meals':meals}
+        'meals':res,
+        'totals':totals}
     if request.method == 'GET':
         return render(request, 'tracking/index.html', context)
         
     if request.method == 'POST':
         food = request.POST['food']
         url = f'https://api.nal.usda.gov/fdc/v1/foods/search?api_key={api_key}&query={food}'
-
         data = requests.get(url).json()
-        
         nutrients = {'protein': 0, 'carbs':2, 'fats': 1, 'fiber':9, 'calories':3}
-
         return render(request, 'tracking/index.html', context)
 
 def savemeal(request):
@@ -90,3 +97,33 @@ def savemeal(request):
         
     
     return HttpResponseRedirect(reverse('index'))
+
+def settings(request):
+    if request.method=='GET':
+        user = User.objects.get(id=request.user.id)
+
+        context = {
+            'protein':user.protein_goal,
+            'carb': user.carb_goal,
+            'fat': user.fat_goal,
+            'cals': user.calorie_goal}
+        return render(request, 'tracking/settings.html', context)
+
+    if request.method=='POST':
+        user = User.objects.get(id=request.user.id)
+        carbs = request.POST.get('carb')
+        protein = request.POST.get('protein')
+        fats = request.POST.get('fat')
+        calories = request.POST.get('true-calories')
+        user.carb_goal = carbs
+        user.protein_goal = protein
+        user.fat_goal = fats
+        user.calorie_goal = calories
+        user.save()
+        context = {
+            'protein':user.protein_goal,
+            'carb': user.carb_goal,
+            'fat': user.fat_goal,
+            'cals': user.calorie_goal}
+
+        return render(request, 'tracking/settings.html', context)

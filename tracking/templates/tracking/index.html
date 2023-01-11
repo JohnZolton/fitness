@@ -5,9 +5,39 @@
     {% if meals %}
     <h2>Meal History</h2>
     <div>
-        {% for meal in meals %}
-        <ul>{{meal.contents}}</ul>
-        {% endfor %}
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Protein</th>
+                <th>Carb</th>
+                <th>Fat</th>
+                <th>Fiber</th>
+                <th>Calories</th>
+                <th>Serving (g)</th>
+            </tr>
+            {% for meal in meals %}
+            <tr>
+                {% for item in meal %}
+                <td>{{item}}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+            <tr>
+                <td><strong>Total: </strong></td>
+                {% for item in totals %}
+                <td>{{item}}</td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <td>Targets:</td>
+                <td>{{user.protein_goal}}</td>
+                <td>{{user.carb_goal}}</td>
+                <td>{{user.fat_goal}}</td>
+                <td></td>
+                <td>{{user.calorie_goal}}</td>
+            </tr>
+        </table>
+
     </div>
     {% endif %}
     <H2>Selected Foods</H2>
@@ -25,7 +55,7 @@
             </tr>
             
         </table>
-        <button type="submit">Save Meal</button>
+        <button type="submit" id="save-meal">Save Meal</button>
         </form>
     </div>
 
@@ -43,5 +73,7 @@
         </table>
     </div>
     <input type="hidden" id="key" value="{{key}}">
+    {% load static %}
+<script type = 'text/javascript' src="{% static 'tracking.js' %}"></script>
     {% endblock %}
 </div>

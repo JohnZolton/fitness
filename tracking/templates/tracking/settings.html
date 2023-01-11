@@ -1,0 +1,34 @@
+{% extends "tracking/layout.html" %}
+
+{% block body %}
+
+
+    <h2>Settings</h2>
+    {% if user.is_authenticated %}
+        <h3>Nutrition Goals</h3>
+        <form action="{% url 'settings' %}" method="POST">
+            {% csrf_token %}
+            <div>
+                <label>Protein</label>
+                <input type="number" id='protein' name="protein" value="{{protein}}">
+            </div>
+            <div>
+                <label>Carbs</label>
+                <input type="number" id="carb" name="carb" value="{{carb}}">
+            </div>
+            <div>
+                <label>Fats</label>
+                <input type="number" id="fat" name="fat" value="{{fat}}">
+            </div>
+            <input type="hidden" id="true-calories" name="true-calories" value="{{cals}}">
+            <div id="calories" data-value="{{cals}}">Calories: {{cals}}</div>
+            <button type="submit">Save</button>
+        </form>
+
+    {% else %}
+    <div>Sign in</div>
+    {% endif %}
+
+    {% load static %}
+    <script type = 'text/javascript' src="{% static 'settings.js' %}"></script>
+{% endblock %}

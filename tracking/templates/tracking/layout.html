@@ -6,13 +6,19 @@
         <title class="center">{% block title %}Tracking{% endblock %}</title>
         <link href="{% static 'tracking/styles.css' %}" rel="stylesheet">
         {% block script %}
-        <script type = 'text/javascript' src="{% static 'tracking.js' %}"></script>
+        
         {% endblock %}
     </head>
     <body>
         <h1>Fitness Tracking</h1>
         <div>
+            <li>
+                <a href="{% url 'index' %}">Home</a>
+            </li>
             {% if user.is_authenticated %}
+            <li>
+                <a href="{% url 'settings' %}">Settings</a>
+            </li>
             <li>
                 <a href="{% url 'logout' %}">Logout</a>
             </li>

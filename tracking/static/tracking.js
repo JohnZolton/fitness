@@ -2,6 +2,7 @@ var counter = 1
 
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('lookup').addEventListener("submit", search);
+    document.getElementById('save-meal').addEventListener("submit", hidechildren);
 })
 
 
