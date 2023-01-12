@@ -1,0 +1,17 @@
+{% extends "tracking/layout.html" %}
+
+{% block body %}
+
+
+    <h2>Data</h2>
+    {% if user.is_authenticated %}
+        {% for metric in metrics %}
+        <div>{{metric.date}}: {{metric.steps}} steps; {{metric.bodyweight}} lbs; {{metrics.calories}} Calories</div>
+        {% endfor %}
+    {% else %}
+    <div>Sign in</div>
+    {% endif %}
+
+    {% load static %}
+    <script type = 'text/javascript' src="{% static 'settings.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "tracking/layout.html" %}
+
+{% block body %}
+
+    <h2>Sync Steps</h2>
+    <h3>
+        {% if sync_date %}
+        Last sync: {{sync_date}}
+        {% else %}
+        No sync data
+        {% endif %}
+    </h3>
+    <div>This only works for Garmin smart watches</div>
+    <form action="{% url 'steps' %}" method="post">
+        {% csrf_token %}
+        <div>
+            <label>Garmin email:</label>
+            <input type="email" placeholder="" name="email">
+        </div>
+        <div>
+          <label>Garmin password:</label>
+        <input type="password" placeholder="" name="password">  
+        </div>
+        <div>
+           <label>Until how many days ago?</label>
+        <input type="number" name="days"> 
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+
+
+{% endblock %}

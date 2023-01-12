@@ -8,7 +8,14 @@ import requests
 import json
 import datetime
 import keys
+import time
 
+from garminconnect import (
+    Garmin,
+    GarminConnectAuthenticationError,
+    GarminConnectConnectionError,
+    GarminConnectTooManyRequestsError,
+)
 api_key = keys.api_key
 
 
@@ -60,20 +67,19 @@ def register(request):
 
 
 def index(request):
-    meals = Meal.objects.filter(account=request.user.id, time=datetime.date.today())
     res = []
     totals = [0,0,0,0,0]
-    for i in range(len(meals)):
-        meal_data = eval(meals[i].contents)
-        for food in meal_data:
-            res.append(food)
-            for i in range(1, len(food)-1):
-                totals[i-1] += int(food[i])
 
     if request.user.id:
-        dailymetrics, _ = Metrics.objects.get_or_create(account=request.user, date=datetime.date.today())
-        bodyweight = dailymetrics.bodyweight
-        steps = dailymetrics.steps
+        metrics, _ = Metrics.objects.get_or_create(account=request.user, date=datetime.date.today())
+        if metrics.contents:
+            meal_data = eval(metrics.contents)
+            for food in meal_data:
+                res.append(food)
+                for i in range(1, len(food)-1):
+                    totals[i-1] += int(food[i])
+        bodyweight = metrics.bodyweight
+        steps = metrics.steps
         cur_user = User.objects.get(id=request.user.id)
         if cur_user.last_step_sync_date:
             if datetime.date.today - cur_user.last_step_sync_date == datetime.timedelta(days=1):
@@ -106,8 +112,11 @@ def savemeal(request):
         food_item = request.POST.get(str(count)).split(';')
         meal.append(food_item)
         count+=1
-    full_meal = Meal(account=user, contents= meal)
+    full_meal, _ = Metrics.objects.get_or_create(account=user, date=datetime.date.today())
+    full_meal.contents = eval(full_meal.contents) + meal
+
     full_meal.save()
+
     return HttpResponseRedirect(reverse('index'))
 
 def settings(request):
@@ -147,7 +156,55 @@ def bodyweight(request):
         dailymetrics.save()
     return HttpResponseRedirect(reverse('index'))
 
-def syncsteps(request):
-    days = request.POST.get('days')
-    print(days)
-    return HttpResponseRedirect(reverse('index'))
+def steps(request):
+    if request.method == 'GET':
+        days = request.POST.get('days')
+        print(days)
+        return render(request, 'tracking/steps.html')
+
+    if request.method == 'POST':
+        days = request.POST.get('days')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        today = datetime.date.today()
+
+        start_date = today - datetime.timedelta(days=int(days))
+        cur_day = today
+        #api = Garmin(email, password)
+        #api.login()
+        fields = ['calendarDate','totalSteps']
+        format= '%Y-%m-%d'
+        total_data = []
+        
+        """while cur_day != start_date:
+            data = []
+            day_data = api.get_stats(cur_day)
+            for field in fields:
+                data.append(day_data[field])
+            total_data.append(data)
+            cur_day -= datetime.timedelta(days=1)
+            time.sleep(1)"""
+        total_data = [
+            ['2023-01-12', 9999],
+            ['2023-01-11', 9998],
+            ['2023-01-10', 9997],
+            ['2023-01-9', 9996]
+        ]
+        
+        user = User.objects.get(id=request.user.id)
+        #all_metrics = Metrics.objects.filter(account = user)
+
+        for line in total_data:
+            metric, _ = Metrics.objects.get_or_create(account=user, date=line[0])
+            print(metric.date)
+            metric.steps = line[1]
+            metric.save()
+
+        return HttpResponseRedirect(reverse('steps'))
+
+def viewdata(request):
+    user = User.objects.get(id=request.user.id)
+    metrics = Metrics.objects.filter(account=user).order_by('date')
+    context = {'metrics': metrics}
+    return render(request, 'tracking/data.html', context)
