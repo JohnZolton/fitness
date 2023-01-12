@@ -71,10 +71,9 @@ def index(request):
     totals = [0,0,0,0,0]
 
     if request.user.id:
-        metrics, _ = Metrics.objects.get_or_create(account=request.user.id, date=datetime.date.today())
+        metrics, _ = Metrics.objects.get_or_create(account=request.user, date=datetime.date.today())
         if metrics.contents:
             meal_data = eval(metrics.contents)
-            print(meal_data)
             for food in meal_data:
                 res.append(food)
                 for i in range(1, len(food)-1):
@@ -115,7 +114,9 @@ def savemeal(request):
         count+=1
     full_meal, _ = Metrics.objects.get_or_create(account=user, date=datetime.date.today())
     full_meal.contents = eval(full_meal.contents) + meal
+
     full_meal.save()
+
     return HttpResponseRedirect(reverse('index'))
 
 def settings(request):
@@ -170,34 +171,34 @@ def steps(request):
 
         start_date = today - datetime.timedelta(days=int(days))
         cur_day = today
-        api = Garmin(email, password)
-        api.login()
+        #api = Garmin(email, password)
+        #api.login()
         fields = ['calendarDate','totalSteps']
         format= '%Y-%m-%d'
         total_data = []
         
-        while cur_day != start_date:
+        """while cur_day != start_date:
             data = []
             day_data = api.get_stats(cur_day)
             for field in fields:
                 data.append(day_data[field])
             total_data.append(data)
             cur_day -= datetime.timedelta(days=1)
-            time.sleep(1)
+            time.sleep(1)"""
+        total_data = [
+            ['2023-01-12', 9999],
+            ['2023-01-11', 9998],
+            ['2023-01-10', 9997],
+            ['2023-01-9', 9996]
+        ]
         
         user = User.objects.get(id=request.user.id)
-        all_metrics = Metrics.objects.filter(account = user)
-        for item in all_metrics:
-            print(item.date)
-        print(total_data)
-        for line in total_data:
-            print(line[0], line[1])
+        #all_metrics = Metrics.objects.filter(account = user)
 
-            if not Metrics.objects.filter(account=user, date=line[0]).exists():
-                metric = Metrics.objects.create(account=user, date=line[0], steps=line[1])
-            else:
-                metric = Metrics.objects.get(account=user, date=line[0])
-                metric.steps = line[1]
+        for line in total_data:
+            metric, _ = Metrics.objects.get_or_create(account=user, date=line[0])
+            print(metric.date)
+            metric.steps = line[1]
             metric.save()
 
         return HttpResponseRedirect(reverse('steps'))

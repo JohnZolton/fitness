@@ -4,15 +4,15 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     id = models.AutoField(primary_key=True)
-    protein_goal = models.IntegerField()
-    carb_goal = models.IntegerField(default=0)
-    fat_goal = models.IntegerField(default=0)
-    calorie_goal = models.IntegerField(default=0)
+    protein_goal = models.IntegerField(default=0, null=True)
+    carb_goal = models.IntegerField(default=0, null=True)
+    fat_goal = models.IntegerField(default=0, null=True)
+    calorie_goal = models.IntegerField(default=0, null=True)
     last_step_sync_date = models.DateField(default=None, null=True)
 
 class Metrics(models.Model):
     account = models.ForeignKey(User, on_delete=models.CASCADE)
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField(null=True)
     steps = models.IntegerField(default=None, null=True)
     bodyweight = models.FloatField(default=None, null=True)
     calories = models.IntegerField(default=None, null=True)
