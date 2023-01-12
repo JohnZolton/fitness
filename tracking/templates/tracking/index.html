@@ -2,6 +2,24 @@
 
 <div>
     {% block body %}
+    {% if not bodyweight %}
+    <form action = "{% url 'bodyweight' %}" method="post">
+        {% csrf_token %}
+        <label>Bodyweight: </label>
+        <input type="number" name="weight">
+        <button type="submit">Save</button>
+    </form>
+    {% else %}
+    <div>Body weight: {{bodyweight}}</div>
+    {% endif %}
+    {% if not steps %}
+    <form action = "{% url 'syncsteps' %}" method="post">
+        {% csrf_token %}
+        <label>Past days to sync: </label>
+        <input type="number" name="days">
+        <button type="submit">Sync Steps</button>
+    </form>
+    {% endif %}
     {% if meals %}
     <h2>Meal History</h2>
     <div>

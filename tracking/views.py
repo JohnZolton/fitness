@@ -70,22 +70,33 @@ def index(request):
             for i in range(1, len(food)-1):
                 totals[i-1] += int(food[i])
 
+    if request.user.id:
+        dailymetrics, _ = Metrics.objects.get_or_create(account=request.user, date=datetime.date.today())
+        bodyweight = dailymetrics.bodyweight
+        steps = dailymetrics.steps
+        cur_user = User.objects.get(id=request.user.id)
+        if cur_user.last_step_sync_date:
+            if datetime.date.today - cur_user.last_step_sync_date == datetime.timedelta(days=1):
+                steps_updated = True
+        else: 
+            steps_updated = False
+    else:
+        bodyweight = None
+        steps = None
+        steps_updated = False
     context = {
-        'key':api_key,
-        'meals':res,
-        'protein':totals[0],
+        'key': api_key,
+        'meals': res,
+        'protein': totals[0],
         'carbs': totals[1],
         'fats': totals[2],
-        'calories':totals[4]}
-    if request.method == 'GET':
-        return render(request, 'tracking/index.html', context)
-        
-    if request.method == 'POST':
-        food = request.POST['food']
-        url = f'https://api.nal.usda.gov/fdc/v1/foods/search?api_key={api_key}&query={food}'
-        data = requests.get(url).json()
-        nutrients = {'protein': 0, 'carbs':2, 'fats': 1, 'fiber':9, 'calories':3}
-        return render(request, 'tracking/index.html', context)
+        'calories': totals[4],
+        'bodyweight': bodyweight,
+        'steps': steps,
+        'steps_updated':steps_updated}
+ 
+    return render(request, 'tracking/index.html', context)
+
 
 def savemeal(request):
     user = User.objects.get(id=request.user.id)
@@ -97,8 +108,6 @@ def savemeal(request):
         count+=1
     full_meal = Meal(account=user, contents= meal)
     full_meal.save()
-        
-    
     return HttpResponseRedirect(reverse('index'))
 
 def settings(request):
@@ -130,3 +139,15 @@ def settings(request):
             'cals': user.calorie_goal}
 
         return render(request, 'tracking/settings.html', context)
+
+def bodyweight(request):
+    if request.method == 'POST':
+        dailymetrics = Metrics.objects.get(date=datetime.date.today(), account=request.user)
+        dailymetrics.bodyweight = request.POST.get('weight')
+        dailymetrics.save()
+    return HttpResponseRedirect(reverse('index'))
+
+def syncsteps(request):
+    days = request.POST.get('days')
+    print(days)
+    return HttpResponseRedirect(reverse('index'))
