@@ -147,7 +147,8 @@ def bodyweight(request):
         dailymetrics.save()
     return HttpResponseRedirect(reverse('index'))
 
-def syncsteps(request):
-    days = request.POST.get('days')
-    print(days)
-    return HttpResponseRedirect(reverse('index'))
+def steps(request):
+    if request.method == 'GET':
+        days = request.POST.get('days')
+        print(days)
+        return render(request, 'tracking/steps.html')
