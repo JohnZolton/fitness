@@ -13,3 +13,9 @@ class Meal(models.Model):
     account = models.ForeignKey(User, on_delete=models.CASCADE)
     time = models.DateField(auto_now_add=True)
     contents = models.TextField()
+
+class Metrics(models.Model):
+    account = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateField(auto_now_add=True)
+    steps = models.IntegerField(default=0)
+    bodyweight = models.FloatField(default=None)
