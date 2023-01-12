@@ -73,7 +73,10 @@ def index(request):
     context = {
         'key':api_key,
         'meals':res,
-        'totals':totals}
+        'protein':totals[0],
+        'carbs': totals[1],
+        'fats': totals[2],
+        'calories':totals[4]}
     if request.method == 'GET':
         return render(request, 'tracking/index.html', context)
         

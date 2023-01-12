@@ -23,18 +23,12 @@
             </tr>
             {% endfor %}
             <tr>
-                <td><strong>Total: </strong></td>
-                {% for item in totals %}
-                <td>{{item}}</td>
-                {% endfor %}
-            </tr>
-            <tr>
-                <td>Targets:</td>
-                <td>{{user.protein_goal}}</td>
-                <td>{{user.carb_goal}}</td>
-                <td>{{user.fat_goal}}</td>
+                <td><strong>Totals: </strong></td>
+                <td>{{protein}}/{{user.protein_goal}}</td>
+                <td>{{carbs}}{{user.carb_goal}}</td>
+                <td>{{fats}}/{{user.fat_goal}}</td>
                 <td></td>
-                <td>{{user.calorie_goal}}</td>
+                <td>{{calories}}/{{user.calorie_goal}}</td>
             </tr>
         </table>
 
