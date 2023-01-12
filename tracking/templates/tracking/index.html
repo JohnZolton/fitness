@@ -13,10 +13,7 @@
     <div>Body weight: {{bodyweight}}</div>
     {% endif %}
     {% if not steps %}
-    <form action = "{% url 'syncsteps' %}" method="post">
-        {% csrf_token %}
-        <label>Past days to sync: </label>
-        <input type="number" name="days">
+    <form action = "{% url 'steps' %}" method="get">
         <button type="submit">Sync Steps</button>
     </form>
     {% endif %}

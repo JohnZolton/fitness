@@ -3,11 +3,20 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
+from django.core.exceptions import MultipleObjectsReturned
 from .models import *
 import requests
 import json
 import datetime
 import keys
+import time
+
+from garminconnect import (
+    Garmin,
+    GarminConnectAuthenticationError,
+    GarminConnectConnectionError,
+    GarminConnectTooManyRequestsError,
+)
 
 api_key = keys.api_key
 
@@ -147,7 +156,45 @@ def bodyweight(request):
         dailymetrics.save()
     return HttpResponseRedirect(reverse('index'))
 
-def syncsteps(request):
-    days = request.POST.get('days')
-    print(days)
-    return HttpResponseRedirect(reverse('index'))
+def steps(request):
+    if request.method == 'GET':
+        user = User.objects.get(id=request.user.id)
+        last_date = user.last_step_sync_date
+        return render(request, 'tracking/steps.html', {'sync_date': last_date})
+    
+    if request.method == 'POST':
+        days = request.POST.get('days')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        print(days, email, password)
+        today = datetime.date.today()
+        start_date = today - datetime.timedelta(days=int(days))
+        cur_day = today
+        api = Garmin(email, password)
+        api.login()
+        fields = ['calendarDate','totalSteps']
+        format= '%Y-%m-%d'
+        total_data = []
+        
+        while cur_day != start_date:
+            data = []
+            day_data = api.get_stats(cur_day)
+            for field in fields:
+                data.append(day_data[field])
+            total_data.append(data)
+            cur_day -= datetime.timedelta(days=1)
+            time.sleep(.25)
+        
+        user = User.objects.get(id=request.user.id)
+
+        for line in total_data:
+            """try:
+                metric, _ = Metrics.objects.get_or_create(account=user, date=line[0])
+            except MultipleObjectsReturned as e:
+                # handle the case as you need here
+                pass"""
+            metric, _ = Metrics.objects.get_or_create(account=user, date=line[0])
+            metric.steps = line[1]
+            metric.save()
+            print(metric.steps)
+        return HttpResponseRedirect(reverse('steps'))

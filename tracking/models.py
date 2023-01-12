@@ -21,3 +21,6 @@ class Metrics(models.Model):
     date = models.DateField(auto_now_add=True)
     steps = models.IntegerField(default=None, null=True)
     bodyweight = models.FloatField(default=None, null=True)
+
+    #class Meta:
+     #   unique_together = ['account', 'date']
