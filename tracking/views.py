@@ -182,7 +182,7 @@ def steps(request):
                 data.append(day_data[field])
             total_data.append(data)
             cur_day -= datetime.timedelta(days=1)
-            time.sleep(.25)
+            time.sleep(1)
         
         user = User.objects.get(id=request.user.id)
         all_metrics = Metrics.objects.filter(account = user)
