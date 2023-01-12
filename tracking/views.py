@@ -8,7 +8,14 @@ import requests
 import json
 import datetime
 import keys
+import time
 
+from garminconnect import (
+    Garmin,
+    GarminConnectAuthenticationError,
+    GarminConnectConnectionError,
+    GarminConnectTooManyRequestsError,
+)
 api_key = keys.api_key
 
 
@@ -152,3 +159,44 @@ def steps(request):
         days = request.POST.get('days')
         print(days)
         return render(request, 'tracking/steps.html')
+
+    if request.method == 'POST':
+        days = request.POST.get('days')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        today = datetime.date.today()
+
+        start_date = today - datetime.timedelta(days=int(days))
+        cur_day = today
+        api = Garmin(email, password)
+        api.login()
+        fields = ['calendarDate','totalSteps']
+        format= '%Y-%m-%d'
+        total_data = []
+        
+        while cur_day != start_date:
+            data = []
+            day_data = api.get_stats(cur_day)
+            for field in fields:
+                data.append(day_data[field])
+            total_data.append(data)
+            cur_day -= datetime.timedelta(days=1)
+            time.sleep(.25)
+        
+        user = User.objects.get(id=request.user.id)
+        all_metrics = Metrics.objects.filter(account = user)
+        for item in all_metrics:
+            print(item.date)
+        print(total_data)
+        for line in total_data:
+            print(line[0], line[1])
+
+            if not Metrics.objects.filter(account=user, date=line[0]).exists():
+                metric = Metrics.objects.create(account=user, date=line[0], steps=line[1])
+            else:
+                metric = Metrics.objects.get(account=user, date=line[0])
+                metric.steps = line[1]
+            metric.save()
+
+        return HttpResponseRedirect(reverse('steps'))
