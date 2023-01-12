@@ -8,4 +8,6 @@ urlpatterns = [
     path('register', views.register, name='register'),
     path('savemeal', views.savemeal, name='savemeal'),
     path('settings', views.settings, name='settings'),
+    path('bodyweight', views.bodyweight, name='bodyweight'),
+    path('syncsteps', views.syncsteps, name='syncsteps'),
 ]
