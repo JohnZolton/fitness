@@ -17,6 +17,9 @@
             </li>
             {% if user.is_authenticated %}
             <li>
+                <a href="{% url 'viewdata' %}">View Data</a>
+            </li>
+            <li>
                 <a href="{% url 'settings' %}">Settings</a>
             </li>
             <li>

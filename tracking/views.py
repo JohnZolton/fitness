@@ -67,20 +67,20 @@ def register(request):
 
 
 def index(request):
-    meals = Meal.objects.filter(account=request.user.id, time=datetime.date.today())
     res = []
     totals = [0,0,0,0,0]
-    for i in range(len(meals)):
-        meal_data = eval(meals[i].contents)
-        for food in meal_data:
-            res.append(food)
-            for i in range(1, len(food)-1):
-                totals[i-1] += int(food[i])
 
     if request.user.id:
-        dailymetrics, _ = Metrics.objects.get_or_create(account=request.user, date=datetime.date.today())
-        bodyweight = dailymetrics.bodyweight
-        steps = dailymetrics.steps
+        metrics, _ = Metrics.objects.get_or_create(account=request.user.id, date=datetime.date.today())
+        if metrics.contents:
+            meal_data = eval(metrics.contents)
+            print(meal_data)
+            for food in meal_data:
+                res.append(food)
+                for i in range(1, len(food)-1):
+                    totals[i-1] += int(food[i])
+        bodyweight = metrics.bodyweight
+        steps = metrics.steps
         cur_user = User.objects.get(id=request.user.id)
         if cur_user.last_step_sync_date:
             if datetime.date.today - cur_user.last_step_sync_date == datetime.timedelta(days=1):
@@ -113,7 +113,8 @@ def savemeal(request):
         food_item = request.POST.get(str(count)).split(';')
         meal.append(food_item)
         count+=1
-    full_meal = Meal(account=user, contents= meal)
+    full_meal, _ = Metrics.objects.get_or_create(account=user, date=datetime.date.today())
+    full_meal.contents = eval(full_meal.contents) + meal
     full_meal.save()
     return HttpResponseRedirect(reverse('index'))
 
@@ -200,3 +201,9 @@ def steps(request):
             metric.save()
 
         return HttpResponseRedirect(reverse('steps'))
+
+def viewdata(request):
+    user = User.objects.get(id=request.user.id)
+    metrics = Metrics.objects.filter(account=user).order_by('date')
+    context = {'metrics': metrics}
+    return render(request, 'tracking/data.html', context)

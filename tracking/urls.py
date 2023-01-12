@@ -10,4 +10,5 @@ urlpatterns = [
     path('settings', views.settings, name='settings'),
     path('bodyweight', views.bodyweight, name='bodyweight'),
     path('steps', views.steps, name='steps'),
+    path('viewdata', views.viewdata, name='viewdata'),
 ]
