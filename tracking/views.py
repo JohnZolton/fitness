@@ -9,6 +9,8 @@ import json
 import datetime
 import keys
 import time
+from plotly.offline import plot
+from plotly.graph_objs import Scatter
 
 from garminconnect import (
     Garmin,
@@ -197,7 +199,6 @@ def steps(request):
 
         for line in total_data:
             metric, _ = Metrics.objects.get_or_create(account=user, date=line[0])
-            print(metric.date)
             metric.steps = line[1]
             metric.save()
 
@@ -206,5 +207,26 @@ def steps(request):
 def viewdata(request):
     user = User.objects.get(id=request.user.id)
     metrics = Metrics.objects.filter(account=user).order_by('date')
-    context = {'metrics': metrics}
+    i = 1
+    dates, bodyweight, steps, calories = [],[],[],[]
+    
+    for day in metrics:
+        dates.append(day.date.strftime('%Y-%m-%d'))
+        
+        bodyweight.append(day.bodyweight)
+        if day.steps:
+            steps.append(day.steps)
+        else:
+            steps.append(0)
+        calories.append(day.calories)
+
+    calories = [2500, 2800, 3000, 2700, 2750]
+    bodyweight = [187, 188.5, 191, 192, 192.4]
+    context = {
+        'metrics': metrics,
+        'steps_data': steps,
+        'bodyweight_data': bodyweight,
+        'calorie_data': calories,
+        'dates':dates,
+    }
     return render(request, 'tracking/data.html', context)

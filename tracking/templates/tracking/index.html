@@ -6,7 +6,7 @@
     <form action = "{% url 'bodyweight' %}" method="post">
         {% csrf_token %}
         <label>Bodyweight: </label>
-        <input type="number" name="weight">
+        <input type="number" step=".1" name="weight">
         <button type="submit">Save</button>
     </form>
     {% else %}

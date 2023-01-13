@@ -15,7 +15,7 @@ class Metrics(models.Model):
     date = models.DateField(null=True)
     steps = models.IntegerField(default=None, null=True)
     bodyweight = models.FloatField(default=None, null=True)
-    calories = models.IntegerField(default=None, null=True)
+    calories = models.IntegerField(default=0, null=True)
     contents = models.TextField(default=None, null=True)
 
     class Meta:
