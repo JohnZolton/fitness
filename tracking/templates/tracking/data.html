@@ -8,10 +8,48 @@
         {% for metric in metrics %}
         <div>{{metric.date}}: {{metric.steps}} steps; {{metric.bodyweight}} lbs; {{metrics.calories}} Calories</div>
         {% endfor %}
+    <h3>Steps</h3>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    <script>
+        var config = {
+          type: 'line',
+          data: {
+            datasets: [
+                {
+                    data: {{ steps_data|safe }},
+                    label: 'Steps',
+                    fillColor: "rgba(0,0,0,0)",
+                    strokeColor: "rgba(220,220,220,1)",
+                    pointColor: "rgba(200,122,20,1)",
+            },
+            {
+                data: {{ calorie_data|safe }},
+                label: 'Calories'
+        },
+        {
+                data: {{ bodyweight_data|safe }},
+                label: 'Bodyweight'
+        }
+        ],
+            labels: {{ dates|safe }}
+          },
+          options: {
+            responsive: true
+          }
+        };
+    
+        window.onload = function() {
+          var ctx = document.getElementById('steps_chart').getContext('2d');
+          window.myPie = new Chart(ctx, config);
+        };
+    
+      </script>
+    <canvas id="steps_chart" style="width:100%;max-width:700px">
+
+    </canvas>
+
     {% else %}
     <div>Sign in</div>
     {% endif %}
 
-    {% load static %}
-    <script type = 'text/javascript' src="{% static 'settings.js' %}"></script>
 {% endblock %}
