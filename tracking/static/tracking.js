@@ -1,11 +1,19 @@
 var counter = 1
+const target = document.getElementById('food')
 
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('lookup').addEventListener("submit", search);
     document.getElementById('save-meal').addEventListener("submit", hidechildren);
     document.getElementById('food').addEventListener("input", autocomplete)
-    //document.getElementById('food').addEventListener("focusout", closeall)
+    document.getElementById('food').addEventListener('blur', clearautocomplete)
 })
+
+function clearautocomplete(){
+    setTimeout(() => {
+        closeall()
+    }, 200);
+}
+
 
 function autocomplete(event){
     let api = document.getElementById('key').value
@@ -16,6 +24,8 @@ function autocomplete(event){
     if (document.getElementById('foodautocomplete-list')){
         document.getElementById('foodautocomplete-list').innerHTML=""
     }
+
+
     newdiv = document.createElement("DIV");
     newdiv.setAttribute("id", this.id + "autocomplete-list");
     newdiv.setAttribute("class", "autocomplete-items");
