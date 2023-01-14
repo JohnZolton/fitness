@@ -130,14 +130,14 @@ function addfood(){
     let newitem = document.createElement('tr')
     newitem.innerHTML=`
     <td>${item}</td>
-    <td id='protein'>${Math.round(protein*portion_factor)}</td>
-    <td id='carb'>${Math.round(carbs*portion_factor)}</td>
-    <td id='fat'>${Math.round(fats*portion_factor)}</td>
-    <td id='fiber'>${Math.round(fiber*portion_factor)}</td>
-    <td id='calories'>${Math.round(cals*portion_factor)}</td>
+    <td id='${item}-protein' value='${protein}'>${Math.round(protein*portion_factor)}</td>
+    <td id='${item}-carb'value='${Math.round(carbs*portion_factor)}'>${Math.round(carbs*portion_factor)}</td>
+    <td id='${item}-fat' value='${Math.round(fats*portion_factor)}'>${Math.round(fats*portion_factor)}</td>
+    <td id='${item}-fiber' value='${Math.round(fiber*portion_factor)}'>${Math.round(fiber*portion_factor)}</td>
+    <td id='${item}-calories' value='${Math.round(cals*portion_factor)}'>${Math.round(cals*portion_factor)}</td>
     <td id='${item.id}-serving'><input type='number' onSubmit='return false' value='${serving}'></td>
     <td><input type='button' id='${item}'  value='Remove'></td>
-    <input type='hidden' value='${item};${Math.round(protein*portion_factor)};${Math.round(carbs*portion_factor)};${Math.round(fats*portion_factor)};${Math.round(fiber*portion_factor)};${Math.round(cals*portion_factor)};${serving}' name='${counter}'>`
+    <input type='hidden' id='${item}-submissions' value='${item};${Math.round(protein*portion_factor)};${Math.round(carbs*portion_factor)};${Math.round(fats*portion_factor)};${Math.round(fiber*portion_factor)};${Math.round(cals*portion_factor)};${serving}' name='${counter}'>`
 
     document.getElementById('meal-table-div').style.display = 'block'
     document.getElementById('meal-table').appendChild(newitem)
@@ -145,13 +145,32 @@ function addfood(){
     counter ++
     hideresults(document.getElementById('display-table'))
     document.getElementById('food').value = ''
-    document.getElementById(`${item.id}-serving`).addEventListener('change', updatevalues)
+    document.getElementById(`${item.id}-serving`).addEventListener('input', updatevalues)
     
 }
 
 function updatevalues(info){
     console.log('updatevalues fired')
-    console.log(info)
+    let id = this.parentElement.firstElementChild.innerText
+    let newserving = this.firstChild.value
+    let oldserving =info.originalTarget.defaultValue
+    
+    let protein = document.getElementById(`${id}-protein`)
+    console.log(protein)
+    console.log(protein.value)
+    //let carbs = document.getElementById(`${id}-carb`)
+    //let fats = document.getElementById(`${id}-fat`)
+    //let fiber = document.getElementById(`${id}-fiber`)
+    //let cals = document.getElementById(`${id}-calories`)
+
+    factor = newserving / oldserving
+    newprotein = Math.round(protein.innerText * factor)
+    newcarb = Math.round(carbs.innerText * factor)
+    newfat = Math.round(fats.innerText * factor)
+    newfiber = Math.round(fiber.innerText * factor)
+    newcals = Math.round(cals.innerText * factor)
+
+
 }
 
 function removeselection(){
