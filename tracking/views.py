@@ -114,9 +114,11 @@ def savemeal(request):
         food_item = request.POST.get(str(count)).split(';')
         meal.append(food_item)
         count+=1
-    full_meal, _ = Metrics.objects.get_or_create(account=user, date=datetime.date.today())
-    full_meal.contents = eval(full_meal.contents) + meal
-
+    full_meal, created = Metrics.objects.get_or_create(account=user, date=datetime.date.today())
+    if created:
+        full_meal.contents = eval(full_meal.contents) + meal
+    else:
+        full_meal.contents = meal
     full_meal.save()
 
     return HttpResponseRedirect(reverse('index'))
