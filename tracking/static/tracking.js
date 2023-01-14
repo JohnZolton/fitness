@@ -145,7 +145,7 @@ function addfood(){
     counter ++
     hideresults(document.getElementById('display-table'))
     document.getElementById('food').value = ''
-    document.getElementById(`${item.id}-serving`).addEventListener('change', updatevalues(info))
+    document.getElementById(`${item.id}-serving`).addEventListener('change', updatevalues)
     
 }
 
