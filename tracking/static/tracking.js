@@ -1,10 +1,65 @@
 var counter = 1
+const target = document.getElementById('food')
 
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('lookup').addEventListener("submit", search);
     document.getElementById('save-meal').addEventListener("submit", hidechildren);
+    document.getElementById('food').addEventListener("input", autocomplete)
+    document.getElementById('food').addEventListener('blur', clearautocomplete)
 })
 
+function clearautocomplete(){
+    setTimeout(() => {
+        closeall()
+    }, 200);
+}
+
+
+function autocomplete(event){
+    let api = document.getElementById('key').value
+    let url = 'https://api.nal.usda.gov/fdc/v1/foods/search?api_key='
+    let suffix = '&query='
+    let food = document.querySelector('#food').value
+    
+    if (document.getElementById('foodautocomplete-list')){
+        document.getElementById('foodautocomplete-list').innerHTML=""
+    }
+
+
+    newdiv = document.createElement("DIV");
+    newdiv.setAttribute("id", this.id + "autocomplete-list");
+    newdiv.setAttribute("class", "autocomplete-items");
+    this.parentNode.appendChild(newdiv);
+
+    fetch(url + api + suffix + food)
+    .then((response) => response.json())
+    .then((data) => {
+        for (let i = 0; i < data['foods'].length; i++)
+        {
+            let food = data['foods'][i]
+
+            search_res = document.createElement("DIV")
+            search_res.innerHTML = `${food['description']}`
+            search_res.innerHTML += `<input type="hidden" value=${food['description']}>`
+            search_res.addEventListener('click', function(){
+                console.log(this.innerText)
+                document.getElementById('food').value = this.innerText
+                search()
+                closeall()
+                newdiv.innerHTML=''
+            })
+            newdiv.appendChild(search_res)
+        }
+        
+    }); 
+}
+
+function closeall(){
+    var list = document.getElementsByClassName("autocomplete-items");
+    for(var i = list.length - 1; 0 <= i; i--)
+        if(list[i] && list[i].parentElement)
+        list[i].parentElement.removeChild(list[i]);
+}
 
 function search(event) {
     hidechildren(document.getElementById('display-table'))
@@ -85,6 +140,9 @@ function addfood(){
     document.getElementById('meal-table-div').style.display = 'block'
     document.getElementById('meal-table').appendChild(newitem)
     counter ++
+    hidechildren(document.getElementById('display-table'))
+    document.getElementById('food').value = ''
+    
 }
 
 function hidechildren(parent) {
