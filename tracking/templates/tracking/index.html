@@ -33,8 +33,11 @@
             {% for meal in meals %}
             <tr>
                 {% for item in meal %}
-                <td>{{item}}</td>
+                <td class="saved-meal">{{item}}</td>
                 {% endfor %}
+                <td>
+                    <button>edit</button>
+                </td>
             </tr>
             {% endfor %}
             <tr>
@@ -61,6 +64,7 @@
                 <th>Fat</th>
                 <th>Fiber</th>
                 <th>Calories</th>
+                <th>Amount (g)</th>
             </tr>
             
         </table>

@@ -3,7 +3,7 @@ const target = document.getElementById('food')
 
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('lookup').addEventListener("submit", search);
-    document.getElementById('save-meal').addEventListener("submit", hidechildren);
+    document.getElementById('save-meal').addEventListener("submit", hideresults);
     document.getElementById('food').addEventListener("input", autocomplete)
     document.getElementById('food').addEventListener('blur', clearautocomplete)
 })
@@ -62,7 +62,7 @@ function closeall(){
 }
 
 function search(event) {
-    hidechildren(document.getElementById('display-table'))
+    hideresults(document.getElementById('display-table'))
    
     let api = document.getElementById('key').value
     let url = 'https://api.nal.usda.gov/fdc/v1/foods/search?api_key='
@@ -135,17 +135,33 @@ function addfood(){
     <td id='fat'>${Math.round(fats*portion_factor)}</td>
     <td id='fiber'>${Math.round(fiber*portion_factor)}</td>
     <td id='calories'>${Math.round(cals*portion_factor)}</td>
+    <td id='${item.id}-serving'><input type='number' onSubmit='return false' value='${serving}'></td>
+    <td><input type='button' id='${item}'  value='Remove'></td>
     <input type='hidden' value='${item};${Math.round(protein*portion_factor)};${Math.round(carbs*portion_factor)};${Math.round(fats*portion_factor)};${Math.round(fiber*portion_factor)};${Math.round(cals*portion_factor)};${serving}' name='${counter}'>`
 
     document.getElementById('meal-table-div').style.display = 'block'
     document.getElementById('meal-table').appendChild(newitem)
+    document.getElementById(`${item}`).addEventListener('click', removeselection)
     counter ++
-    hidechildren(document.getElementById('display-table'))
+    hideresults(document.getElementById('display-table'))
     document.getElementById('food').value = ''
+    document.getElementById(`${item.id}-serving`).addEventListener('change', updatevalues(info))
     
 }
 
-function hidechildren(parent) {
+function updatevalues(info){
+    console.log('updatevalues fired')
+    console.log(info)
+}
+
+function removeselection(){
+    console.log(this.id)
+    let serving = document.getElementById(`${this.id}-serving`)
+    let size = serving.value
+    return false
+}
+
+function hideresults(parent) {
     while (parent.firstChild) {
         parent.removeChild(parent.firstChild)
     }
