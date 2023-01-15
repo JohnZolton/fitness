@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
+from django.views.decorators.csrf import csrf_exempt
 from django.db import IntegrityError
 from .models import *
 import requests
@@ -9,8 +10,7 @@ import json
 import datetime
 import keys
 import time
-from plotly.offline import plot
-from plotly.graph_objs import Scatter
+
 
 from garminconnect import (
     Garmin,
@@ -105,20 +105,25 @@ def index(request):
  
     return render(request, 'tracking/index.html', context)
 
+@csrf_exempt 
+def addfoods(request):
+    print(request)
+    return HttpResponse('nice')
 
 def savemeal(request):
     user = User.objects.get(id=request.user.id)
     count=1
     meal = []
+    print(request.POST.get(str(count)))
     while request.POST.get(str(count)):
         food_item = request.POST.get(str(count)).split(';')
         meal.append(food_item)
         count+=1
     full_meal, created = Metrics.objects.get_or_create(account=user, date=datetime.date.today())
     if created:
-        full_meal.contents = eval(full_meal.contents) + meal
-    else:
         full_meal.contents = meal
+    else:
+        full_meal.contents = eval(full_meal.contents) + meal
     full_meal.save()
 
     return HttpResponseRedirect(reverse('index'))

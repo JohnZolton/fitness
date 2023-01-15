@@ -126,34 +126,36 @@ function addfood(){
     let cals = info[5].innerHTML
     let fiber = info[4].innerHTML
     
-    portion_factor = serving / 100
-    let newitem = document.createElement('tr')
-    newitem.innerHTML=`
-    <td>${item}</td>
-    <td id='${item}-protein' value='${protein}'>${Math.round(protein*portion_factor)}</td>
-    <td id='${item}-carb'value='${carbs}'>${Math.round(carbs*portion_factor)}</td>
-    <td id='${item}-fat' value='${fats}'>${Math.round(fats*portion_factor)}</td>
-    <td id='${item}-fiber' value='${fiber}'>${Math.round(fiber*portion_factor)}</td>
-    <td id='${item}-calories' value='${cals}'>${Math.round(cals*portion_factor)}</td>
-    <td id='${item.id}-serving'><input type='number' onSubmit='return false' value='${serving}'></td>
-    <td><input type='button' id='${item}'  value='Remove'></td>
-    <input type='hidden' id='${item}-submissions' value='${item};${Math.round(protein*portion_factor)};${Math.round(carbs*portion_factor)};${Math.round(fats*portion_factor)};${Math.round(fiber*portion_factor)};${Math.round(cals*portion_factor)};${serving}' name='${counter}'>`
+    let portion_factor = serving / 100
+    let = protein_val = Math.round(protein*portion_factor)
+    let = carb_val = Math.round(carbs*portion_factor)
+    let = fat_val = Math.round(fats*portion_factor)
+    let = fiber_val = Math.round(fiber*portion_factor)
+    let = calorie_val = Math.round(cals*portion_factor)
 
-    document.getElementById('meal-table-div').style.display = 'block'
-    document.getElementById('meal-table').appendChild(newitem)
-    document.getElementById(`${item}`).addEventListener('click', removeselection)
-    counter ++
+    let nutrition = `${item};${protein_val};${carb_val};${fat_val};${fiber_val};${calorie_val}`
+    console.log(nutrition)
+    
+    fetch('/addfoods', {
+        method: 'POST',
+        body: JSON.stringify({
+            'nutrients':nutrition
+        })
+      })
+      .then(response => response.json())
+      .then(ans => console.log(ans));
+      
+
+
     hideresults(document.getElementById('display-table'))
     document.getElementById('food').value = ''
-    document.getElementById(`${item.id}-serving`).addEventListener('input', updatevalues)
-    
 }
 
 function updatevalues(info){
     console.log('updatevalues fired')
     let id = this.parentElement.firstElementChild.innerText
     let newserving = this.firstChild.value
-    
+
     let protein = document.getElementById(`${id}-protein`)
     let carbs = document.getElementById(`${id}-carb`)
     let fats = document.getElementById(`${id}-fat`)
@@ -181,9 +183,9 @@ function updatevalues(info){
 }
 
 function removeselection(){
-    console.log(this.id)
-    let serving = document.getElementById(`${this.id}-serving`)
-    let size = serving.value
+    console.log(this.parentElement.parentElement)
+    this.parentElement.parentElement.remove()
+    
     return false
 }
 

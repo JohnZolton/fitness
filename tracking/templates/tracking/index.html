@@ -52,25 +52,6 @@
 
     </div>
     {% endif %}
-    <H2>Selected Foods</H2>
-    <div id="meal-table-div" hidden>
-        <form action="{% url 'savemeal' %}" method="post">
-            {% csrf_token %}
-        <table id="meal-table">
-            <tr>
-                <th>Item</th>
-                <th>Protein</th>
-                <th>Carb</th>
-                <th>Fat</th>
-                <th>Fiber</th>
-                <th>Calories</th>
-                <th>Amount (g)</th>
-            </tr>
-            
-        </table>
-        <button type="submit" id="save-meal">Save Meal</button>
-        </form>
-    </div>
 
     <h2>Search Foods</h2>
     <div id="searchbox">
