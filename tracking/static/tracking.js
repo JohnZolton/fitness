@@ -3,7 +3,6 @@ const target = document.getElementById('food')
 
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('lookup').addEventListener("submit", search);
-    document.getElementById('save-meal').addEventListener("submit", hidechildren);
     document.getElementById('food').addEventListener("input", autocomplete)
     document.getElementById('food').addEventListener('blur', clearautocomplete)
 })
@@ -62,7 +61,7 @@ function closeall(){
 }
 
 function search(event) {
-    hidechildren(document.getElementById('display-table'))
+    hideresults(document.getElementById('display-table'))
    
     let api = document.getElementById('key').value
     let url = 'https://api.nal.usda.gov/fdc/v1/foods/search?api_key='
@@ -82,6 +81,7 @@ function search(event) {
             let carbs = 0
             let fats = 0
             let cals = 0
+            let fiber = 0
             let food_id = data['foods'][i]['finalFoodInputFoods']
             food_id.forEach(element => {
                 //console.log(element['foodDescription'] + 'id: ' + element['id'])
@@ -126,26 +126,88 @@ function addfood(){
     let cals = info[5].innerHTML
     let fiber = info[4].innerHTML
     
-    portion_factor = serving / 100
-    let newitem = document.createElement('tr')
-    newitem.innerHTML=`
-    <td>${item}</td>
-    <td id='protein'>${Math.round(protein*portion_factor)}</td>
-    <td id='carb'>${Math.round(carbs*portion_factor)}</td>
-    <td id='fat'>${Math.round(fats*portion_factor)}</td>
-    <td id='fiber'>${Math.round(fiber*portion_factor)}</td>
-    <td id='calories'>${Math.round(cals*portion_factor)}</td>
-    <input type='hidden' value='${item};${Math.round(protein*portion_factor)};${Math.round(carbs*portion_factor)};${Math.round(fats*portion_factor)};${Math.round(fiber*portion_factor)};${Math.round(cals*portion_factor)};${serving}' name='${counter}'>`
+    let portion_factor = serving / 100
+    let = protein_val = Math.round(protein*portion_factor)
+    let = carb_val = Math.round(carbs*portion_factor)
+    let = fat_val = Math.round(fats*portion_factor)
+    let = fiber_val = Math.round(fiber*portion_factor)
+    let = calorie_val = Math.round(cals*portion_factor)
 
-    document.getElementById('meal-table-div').style.display = 'block'
-    document.getElementById('meal-table').appendChild(newitem)
-    counter ++
-    hidechildren(document.getElementById('display-table'))
-    document.getElementById('food').value = ''
+    let nutrition = `${item};${protein_val};${carb_val};${fat_val};${fiber_val};${calorie_val}`
+    //console.log(nutrition)
     
+    fetch('addfoods', {
+        method: 'POST',
+        body: JSON.stringify({
+            item:item,
+            protein:protein_val,
+            carbs: carb_val,
+            fat: fat_val,
+            fiber: fiber_val,
+            cals: calorie_val,
+            serving:serving
+        }),
+      })
+      .then(response => response.json())
+      .then(ans => console.log(ans));
+      
+      let newDiv = document.createElement("tr");
+      newDiv.innerHTML = `
+      <td>${item}</td>
+      <td>${protein_val}</td>
+      <td>${carb_val}</td>
+      <td>${fat_val}</td>
+      <td>${fiber_val}</td>
+      <td>${calorie_val}</td>
+      <td>${serving}</td>
+      <button >Edit</button>`
+
+      document.getElementById("totals-table").appendChild(newDiv)
+
+
+    hideresults(document.getElementById('display-table'))
+    document.getElementById('food').value = ''
 }
 
-function hidechildren(parent) {
+function updatevalues(info){
+    console.log('updatevalues fired')
+    let id = this.parentElement.firstElementChild.innerText
+    let newserving = this.firstChild.value
+
+    let protein = document.getElementById(`${id}-protein`)
+    let carbs = document.getElementById(`${id}-carb`)
+    let fats = document.getElementById(`${id}-fat`)
+    let fiber = document.getElementById(`${id}-fiber`)
+    let cals = document.getElementById(`${id}-calories`)
+    let sub_data = document.getElementById(`${id}-submissions`)
+
+
+    factor = newserving / 100
+    newprotein = Math.round(protein.attributes.value.value * factor)
+    newcarb = Math.round(carbs.attributes.value.value * factor)
+    newfat = Math.round(fats.attributes.value.value * factor)
+    newfiber = Math.round(fiber.attributes.value.value * factor)
+    newcals = Math.round(cals.attributes.value.value * factor)
+    
+    protein.innerText = newprotein
+    carbs.innerText = newcarb
+    fats.innerText = newfat
+    fiber.innerText = newfiber
+    cals.innerText = newcals
+
+    sub_data.attributes.value.value = `${id};${newprotein};${newcarb};${newfat};${newfiber};${newcals};${newserving}`
+    
+
+}
+
+function removeselection(){
+    console.log(this.parentElement.parentElement)
+    this.parentElement.parentElement.remove()
+    
+    return false
+}
+
+function hideresults(parent) {
     while (parent.firstChild) {
         parent.removeChild(parent.firstChild)
     }

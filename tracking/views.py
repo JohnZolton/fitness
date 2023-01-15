@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
+from django.views.decorators.csrf import csrf_exempt
 from django.db import IntegrityError
 from .models import *
 import requests
@@ -9,8 +10,7 @@ import json
 import datetime
 import keys
 import time
-from plotly.offline import plot
-from plotly.graph_objs import Scatter
+
 
 from garminconnect import (
     Garmin,
@@ -71,13 +71,16 @@ def register(request):
 def index(request):
     res = []
     totals = [0,0,0,0,0]
-
+    '''throwaway = Metrics.objects.get(account=request.user, date=datetime.date.today())
+    throwaway.delete()'''
     if request.user.id:
         metrics, _ = Metrics.objects.get_or_create(account=request.user, date=datetime.date.today())
         if metrics.contents:
             meal_data = eval(metrics.contents)
+            print(meal_data)
             for food in meal_data:
                 res.append(food)
+                print(food)
                 for i in range(1, len(food)-1):
                     totals[i-1] += int(food[i])
         bodyweight = metrics.bodyweight
@@ -105,21 +108,26 @@ def index(request):
  
     return render(request, 'tracking/index.html', context)
 
-
-def savemeal(request):
+@csrf_exempt 
+def addfoods(request):
+    item = json.loads(request.body)
+    print(item)
+    print(request.user)
     user = User.objects.get(id=request.user.id)
-    count=1
-    meal = []
-    while request.POST.get(str(count)):
-        food_item = request.POST.get(str(count)).split(';')
-        meal.append(food_item)
-        count+=1
-    full_meal, _ = Metrics.objects.get_or_create(account=user, date=datetime.date.today())
-    full_meal.contents = eval(full_meal.contents) + meal
+    newitem = [[item['item'],item['protein'], item['carbs'], item['fat'], item['fiber'],item['cals'], int(item['serving'])]]
+    meal, newmeal = Metrics.objects.get_or_create(account=user, date=datetime.date.today())
 
-    full_meal.save()
-
-    return HttpResponseRedirect(reverse('index'))
+    if newmeal:
+        meal.contents = newitem
+    else:
+        if meal.contents:
+            meal.contents = eval(meal.contents) + newitem
+        else:
+            meal.contents = newitem
+    print(meal.contents)
+    meal.save()
+    response = {'response':'nice'}
+    return HttpResponse(json.dumps(response), content_type='application/json')
 
 def settings(request):
     if request.method=='GET':
