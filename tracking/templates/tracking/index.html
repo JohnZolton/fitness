@@ -20,8 +20,8 @@
     {% if meals %}
     <h2>Meal History</h2>
     <div>
-        <table>
-            <tr>
+        <table id="totals-table">
+            <tr id="header">
                 <th>Item</th>
                 <th>Protein</th>
                 <th>Carb</th>
@@ -40,20 +40,24 @@
                 </td>
             </tr>
             {% endfor %}
-            <tr>
-                <td><strong>Totals: </strong></td>
-                <td>{{protein}}/{{user.protein_goal}}</td>
-                <td>{{carbs}}/{{user.carb_goal}}</td>
-                <td>{{fats}}/{{user.fat_goal}}</td>
-                <td></td>
-                <td>{{calories}}/{{user.calorie_goal}}</td>
-            </tr>
+            
         </table>
-
+        <div>
+            Protein: {{protein}}/{{user.protein_goal}}
+        </div>
+        <div>
+            Carbs: {{carbs}}/{{user.carb_goal}}
+        </div>
+        <div>
+            Fat: {{fats}}/{{user.fat_goal}}
+        </div>
+        <div>
+            Calories: {{calories}}/{{user.calorie_goal}}
+        </div>
     </div>
     {% endif %}
 
-    <h2>Search Foods</h2>
+    <h2>Add Foods</h2>
     <div id="searchbox">
         <form autocomplete="off" onSubmit='return false' action="{% url 'index' %}" method="POST" id="lookup">
             {% csrf_token %}

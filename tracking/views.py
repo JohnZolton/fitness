@@ -71,13 +71,16 @@ def register(request):
 def index(request):
     res = []
     totals = [0,0,0,0,0]
-
+    '''throwaway = Metrics.objects.get(account=request.user, date=datetime.date.today())
+    throwaway.delete()'''
     if request.user.id:
         metrics, _ = Metrics.objects.get_or_create(account=request.user, date=datetime.date.today())
         if metrics.contents:
             meal_data = eval(metrics.contents)
+            print(meal_data)
             for food in meal_data:
                 res.append(food)
+                print(food)
                 for i in range(1, len(food)-1):
                     totals[i-1] += int(food[i])
         bodyweight = metrics.bodyweight
@@ -107,26 +110,24 @@ def index(request):
 
 @csrf_exempt 
 def addfoods(request):
-    print(request)
-    return HttpResponse('nice')
-
-def savemeal(request):
+    item = json.loads(request.body)
+    print(item)
+    print(request.user)
     user = User.objects.get(id=request.user.id)
-    count=1
-    meal = []
-    print(request.POST.get(str(count)))
-    while request.POST.get(str(count)):
-        food_item = request.POST.get(str(count)).split(';')
-        meal.append(food_item)
-        count+=1
-    full_meal, created = Metrics.objects.get_or_create(account=user, date=datetime.date.today())
-    if created:
-        full_meal.contents = meal
-    else:
-        full_meal.contents = eval(full_meal.contents) + meal
-    full_meal.save()
+    newitem = [[item['item'],item['protein'], item['carbs'], item['fat'], item['fiber'],item['cals'], int(item['serving'])]]
+    meal, newmeal = Metrics.objects.get_or_create(account=user, date=datetime.date.today())
 
-    return HttpResponseRedirect(reverse('index'))
+    if newmeal:
+        meal.contents = newitem
+    else:
+        if meal.contents:
+            meal.contents = eval(meal.contents) + newitem
+        else:
+            meal.contents = newitem
+    print(meal.contents)
+    meal.save()
+    response = {'response':'nice'}
+    return HttpResponse(json.dumps(response), content_type='application/json')
 
 def settings(request):
     if request.method=='GET':

@@ -3,7 +3,6 @@ const target = document.getElementById('food')
 
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('lookup').addEventListener("submit", search);
-    document.getElementById('save-meal').addEventListener("submit", hideresults);
     document.getElementById('food').addEventListener("input", autocomplete)
     document.getElementById('food').addEventListener('blur', clearautocomplete)
 })
@@ -82,6 +81,7 @@ function search(event) {
             let carbs = 0
             let fats = 0
             let cals = 0
+            let fiber = 0
             let food_id = data['foods'][i]['finalFoodInputFoods']
             food_id.forEach(element => {
                 //console.log(element['foodDescription'] + 'id: ' + element['id'])
@@ -134,17 +134,35 @@ function addfood(){
     let = calorie_val = Math.round(cals*portion_factor)
 
     let nutrition = `${item};${protein_val};${carb_val};${fat_val};${fiber_val};${calorie_val}`
-    console.log(nutrition)
+    //console.log(nutrition)
     
-    fetch('/addfoods', {
+    fetch('addfoods', {
         method: 'POST',
         body: JSON.stringify({
-            'nutrients':nutrition
-        })
+            item:item,
+            protein:protein_val,
+            carbs: carb_val,
+            fat: fat_val,
+            fiber: fiber_val,
+            cals: calorie_val,
+            serving:serving
+        }),
       })
       .then(response => response.json())
       .then(ans => console.log(ans));
       
+      let newDiv = document.createElement("tr");
+      newDiv.innerHTML = `
+      <td>${item}</td>
+      <td>${protein_val}</td>
+      <td>${carb_val}</td>
+      <td>${fat_val}</td>
+      <td>${fiber_val}</td>
+      <td>${calorie_val}</td>
+      <td>${serving}</td>
+      <button >Edit</button>`
+
+      document.getElementById("totals-table").appendChild(newDiv)
 
 
     hideresults(document.getElementById('display-table'))
