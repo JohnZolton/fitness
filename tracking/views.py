@@ -105,7 +105,9 @@ def index(request):
         'calories': totals[4],
         'bodyweight': bodyweight,
         'steps': steps,
-        'steps_updated':steps_updated}
+        'steps_updated':steps_updated,
+        'date': datetime.date.today()
+        }
  
     return render(request, 'tracking/index.html', context)
 
@@ -162,7 +164,9 @@ def settings(request):
             'protein':user.protein_goal,
             'carb': user.carb_goal,
             'fat': user.fat_goal,
-            'cals': user.calorie_goal}
+            'cals': user.calorie_goal,
+            'autostep':user.auto_update_steps,
+            'autocopy':user.auto_copy_previous}
         return render(request, 'tracking/settings.html', context)
 
     if request.method=='POST':
@@ -264,3 +268,23 @@ def viewdata(request):
     }
     return render(request, 'tracking/data.html', context)
 
+def copyprevious(request):
+    user = User.objects.get(id=request.user.id)
+    today = datetime.date.today()
+    todays_metrics, created = Metrics.objects.get_or_create(account=user, date=today)
+    yesterday = today - datetime.timedelta(days=1)
+    yesterdays_metrics = Metrics.objects.get(account=user, date=yesterday)
+    if yesterdays_metrics:
+        todays_metrics.contents = yesterdays_metrics.contents
+        todays_metrics.save()
+    else:
+        print('sadge')
+    return HttpResponseRedirect(reverse('index'))
+
+def enablecopyprevious(request):
+    if request.POST.get('enable'):
+        user = User.objects.get(id=request.user.id)
+        user.auto_copy_previous = True
+        user.save()
+
+    return HttpResponseRedirect(reverse('settings'))

@@ -9,6 +9,8 @@ class User(AbstractUser):
     fat_goal = models.IntegerField(default=0, null=True)
     calorie_goal = models.IntegerField(default=0, null=True)
     last_step_sync_date = models.DateField(default=None, null=True)
+    auto_update_steps = models.BooleanField()
+    auto_copy_previous = models.BooleanField()
 
 class Metrics(models.Model):
     account = models.ForeignKey(User, on_delete=models.CASCADE)

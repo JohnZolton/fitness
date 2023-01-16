@@ -16,9 +16,14 @@
     <form action = "{% url 'steps' %}" method="get">
         <button type="submit">Sync Steps</button>
     </form>
-
-    {% if meals %}
     <h2>Meal History</h2>
+    <div><button>Prev</button>{{date}}<button>Next</button></div>
+    <form action = "{% url 'copyprevious' %}" method="post">
+        {% csrf_token %}
+        <button>Copy Previous Day</button>
+    </form>
+    {% if meals %}
+    <div></div>
     <div>
         <table id="totals-table">
             <tr id="header">

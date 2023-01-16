@@ -24,7 +24,15 @@
             <div id="calories" data-value="{{cals}}">Calories: {{cals}}</div>
             <button type="submit">Save</button>
         </form>
+        <h3>Step Tracking</h3>
 
+        <h3>Nutrition Tracking</h3>
+        <form action = "{% url 'enablecopyprevious' %}" method="post">
+            {% csrf_token %}
+            <label for="copyprev">Automatically copy previous day</label>
+            <input type="checkbox" name="enable">
+            <button type="submit">Save</button>
+        </form>
     {% else %}
     <div>Sign in</div>
     {% endif %}
