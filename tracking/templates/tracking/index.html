@@ -32,11 +32,16 @@
             </tr>
             {% for meal in meals %}
             <tr>
-                {% for item in meal %}
-                <td class="saved-meal">{{item}}</td>
-                {% endfor %}
+                <td class="saved-meal">{{meal.0}}</td>
+                <td class="saved-meal">{{meal.1}}</td>
+                <td class="saved-meal">{{meal.2}}</td>
+                <td class="saved-meal">{{meal.3}}</td>
+                <td class="saved-meal">{{meal.4}}</td>
+                <td class="saved-meal">{{meal.5}}</td>
+                <td class="saved-meal" id="{{meal.0}}-quantity">{{meal.6}}</td>
+                
                 <td>
-                    <button id="{{meal.0}}-edit-item" class="edit-saved-meal">edit</button>
+                    <button id="{{meal.0}}-edit" class="edit-button" value="{{meal.0}}">edit</button>
                 </td>
             </tr>
             {% endfor %}

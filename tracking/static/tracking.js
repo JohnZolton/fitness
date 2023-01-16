@@ -5,6 +5,11 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('lookup').addEventListener("submit", search);
     document.getElementById('food').addEventListener("input", autocomplete)
     document.getElementById('food').addEventListener('blur', clearautocomplete)
+    let editbuttons = document.querySelectorAll('.edit-button')
+    console.log(editbuttons)
+    editbuttons.forEach(child => {
+        child.addEventListener('click', editfoods)
+      })
 })
 
 function clearautocomplete(){
@@ -160,13 +165,22 @@ function addfood(){
       <td>${fiber_val}</td>
       <td>${calorie_val}</td>
       <td>${serving}</td>
-      <button >Edit</button>`
+      <button id='${item}-edit' class='edit-button'>edit</button>`
 
       document.getElementById("totals-table").appendChild(newDiv)
-
+      document.getElementById(`${item}-edit`).addEventListener('click', editfoods)
 
     hideresults(document.getElementById('display-table'))
     document.getElementById('food').value = ''
+}
+
+function editfoods() {
+    let id = this.attributes.value.value
+    //old_serving = document.querySelector
+    quant = document.getElementById(`${id}-quantity`)
+    quant.innerHTML = `
+        <input type='number' value=>
+    `
 }
 
 function updatevalues(info){
