@@ -32,31 +32,32 @@
             </tr>
             {% for meal in meals %}
             <tr>
-                <td class="saved-meal">{{meal.0}}</td>
-                <td class="saved-meal">{{meal.1}}</td>
-                <td class="saved-meal">{{meal.2}}</td>
-                <td class="saved-meal">{{meal.3}}</td>
-                <td class="saved-meal">{{meal.4}}</td>
-                <td class="saved-meal">{{meal.5}}</td>
-                <td class="saved-meal" id="{{meal.0}}-quantity">{{meal.6}}</td>
+                <td class="saved-meal" id="{{meal.0}}-name" data_original="{{meal.0}}">{{meal.0}}</td>
+                <td class="saved-meal" id="{{meal.0}}-protein" data_original="{{meal.1}}">{{meal.1}}</td>
+                <td class="saved-meal" id="{{meal.0}}-carbs" data_original="{{meal.2}}">{{meal.2}}</td>
+                <td class="saved-meal" id="{{meal.0}}-fats" data_original="{{meal.3}}">{{meal.3}}</td>
+                <td class="saved-meal" id="{{meal.0}}-fiber" data_original="{{meal.4}}">{{meal.4}}</td>
+                <td class="saved-meal" id="{{meal.0}}-calories" data_original="{{meal.5}}">{{meal.5}}</td>
+                <td class="saved-meal" id="{{meal.0}}-quantity" data_original="{{meal.6}}">{{meal.6}}</td>
                 
                 <td>
                     <button id="{{meal.0}}-edit" class="edit-button" value="{{meal.0}}">edit</button>
+                    <button id="{{meal.0}}-save" class="save-button" value="{{meal.0}}" hidden>save</button>
                 </td>
             </tr>
             {% endfor %}
             
         </table>
-        <div>
+        <div id="total-protein" data_goal = '{{user.protein_goal}}' data_current="{{protein}}">
             Protein: {{protein}}/{{user.protein_goal}}
         </div>
-        <div>
+        <div id="total-carbs" data_goal = '{{user.carb_goal}}'data_current="{{carbs}}">
             Carbs: {{carbs}}/{{user.carb_goal}}
         </div>
-        <div>
+        <div id="total-fat" data_goal = '{{user.fat_goal}}'data_current="{{fats}}">
             Fat: {{fats}}/{{user.fat_goal}}
         </div>
-        <div>
+        <div id="total-cals" data_goal = '{{user.calorie_goal}}'data_current="{{calories}}">
             Calories: {{calories}}/{{user.calorie_goal}}
         </div>
     </div>

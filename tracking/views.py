@@ -129,6 +129,30 @@ def addfoods(request):
     response = {'response':'nice'}
     return HttpResponse(json.dumps(response), content_type='application/json')
 
+@csrf_exempt
+def editfoods(request):
+    item = json.loads(request.body)
+    newitem = [[item['item'],int(item['protein']), int(item['carbs']), int(item['fat']), int(item['fiber']), int(item['cals']), int(item['serving'])]]
+    olditem = [[item['item'],int(item['old_protein']), int(item['old_carbs']), int(item['old_fat']), int(item['old_fiber']),int(item['old_cals']), int(item['old_serving'])]]
+    
+    user = User.objects.get(id=request.user.id)
+    meal = Metrics.objects.get(account=user, date=datetime.date.today())
+    content = eval(meal.contents)
+    print(meal.contents)
+    newcontent = []
+    for line in content:
+        if line == olditem[0]:
+
+            newcontent.append(newitem[0])
+        else:
+            newcontent.append(line)
+    
+    meal.contents = newcontent
+    meal.save()
+
+    response = {'response':'nice'}
+    return HttpResponse(json.dumps(response), content_type='application/json')
+
 def settings(request):
     if request.method=='GET':
         user = User.objects.get(id=request.user.id)
@@ -238,3 +262,4 @@ def viewdata(request):
         'dates':dates,
     }
     return render(request, 'tracking/data.html', context)
+

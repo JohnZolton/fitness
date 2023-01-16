@@ -11,4 +11,5 @@ urlpatterns = [
     path('steps', views.steps, name='steps'),
     path('viewdata', views.viewdata, name='viewdata'),
     path('addfoods', views.addfoods, name='addfoods'),
+    path('editfoods', views.editfoods, name='editfoods'),
 ]

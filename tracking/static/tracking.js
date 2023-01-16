@@ -6,10 +6,15 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('food').addEventListener("input", autocomplete)
     document.getElementById('food').addEventListener('blur', clearautocomplete)
     let editbuttons = document.querySelectorAll('.edit-button')
-    console.log(editbuttons)
+    //console.log(editbuttons)
     editbuttons.forEach(child => {
         child.addEventListener('click', editfoods)
       })
+    let savebuttons = document.querySelectorAll('.save-button')
+      //console.log(editbuttons)
+      savebuttons.forEach(child => {
+          child.addEventListener('click', savechanges)
+        })
 })
 
 function clearautocomplete(){
@@ -176,11 +181,119 @@ function addfood(){
 
 function editfoods() {
     let id = this.attributes.value.value
+    
     //old_serving = document.querySelector
     quant = document.getElementById(`${id}-quantity`)
+    
+    let old_val = quant.innerText
     quant.innerHTML = `
-        <input type='number' value=>
+        <input type='number' value='${old_val}' data_id='${id}'>
     `
+    quant.addEventListener('input', changevalues)
+
+    this.style.display = 'none'
+    document.getElementById(`${id}-save`).style.display='block'
+}
+
+function changevalues() {
+    let id = this.firstElementChild.attributes.data_id.value
+    let oldval = this.attributes.data_original.value
+    let newval = this.firstElementChild.value
+    
+    let factor = newval / oldval
+
+    let protein = document.getElementById(`${id}-protein`)
+    let carbs = document.getElementById(`${id}-carbs`)
+    let fats = document.getElementById(`${id}-fats`)
+    let fiber = document.getElementById(`${id}-fiber`)
+    let cals = document.getElementById(`${id}-calories`)
+    //console.log(protein, carbs, fats, fiber, cals)
+    newprotein = Math.round(protein.attributes.data_original.value * factor)
+    newcarb = Math.round(carbs.attributes.data_original.value * factor)
+    newfat = Math.round(fats.attributes.data_original.value * factor)
+    newfiber = Math.round(fiber.attributes.data_original.value * factor)
+    newcals = Math.round(cals.attributes.data_original.value * factor)
+    
+    protein.innerText = newprotein
+    carbs.innerText = newcarb
+    fats.innerText = newfat
+    fiber.innerText = newfiber
+    cals.innerText = newcals
+}
+
+function savechanges() {
+    let id = this.attributes.value.value
+    let protein = document.getElementById(`${id}-protein`)
+    let carbs = document.getElementById(`${id}-carbs`)
+    let fats = document.getElementById(`${id}-fats`)
+    let fiber = document.getElementById(`${id}-fiber`)
+    let cals = document.getElementById(`${id}-calories`)
+    let serving = document.getElementById(`${id}-quantity`)
+
+    let old_protein = protein.attributes.data_original.value
+    let old_carbs = carbs.attributes.data_original.value
+    let old_fats = fats.attributes.data_original.value
+    let old_fiber = fiber.attributes.data_original.value
+    let old_cals = cals.attributes.data_original.value
+    let old_serving = serving.attributes.data_original.value
+
+    let new_protein = protein.innerText
+    let new_carb = carbs.innerText
+    let new_fat = fats.innerText
+    let new_fiber = fiber.innerText
+    let new_cals = cals.innerText
+    let new_serving = serving.firstElementChild.value
+    
+
+    this.style.display = 'none'
+    document.getElementById(`${id}-edit`).style.display='block'
+    document.getElementById(`${id}-quantity`).innerHTML = new_serving
+
+    let protein_total = document.getElementById('total-protein')
+    let carb_total = document.getElementById('total-carbs')
+    let fat_total = document.getElementById('total-fat')
+    let calorie_total = document.getElementById('total-cals')
+    
+    let protein_goal = protein_total.attributes.data_goal.value
+    let carb_goal = carb_total.attributes.data_goal.value
+    let fat_goal = fat_total.attributes.data_goal.value
+    let calorie_goal = calorie_total.attributes.data_goal.value
+
+    let protein_current = protein_total.attributes.data_current.value
+    let carb_current = carb_total.attributes.data_current.value
+    let fat_current = fat_total.attributes.data_current.value
+    let calorie_current = calorie_total.attributes.data_current.value
+    
+    let new_total_protein = parseInt(protein_current) + parseInt(new_protein) - parseInt(old_protein)
+    let new_total_carb = parseInt(carb_current) + parseInt(new_carb) - parseInt(old_carbs)
+    let new_total_fat = parseInt(fat_current) + parseInt(new_fat) - parseInt(old_fats)
+    let new_total_cals = parseInt(calorie_current) + parseInt(new_cals) - parseInt(old_cals)
+
+    protein_total.innerText = `Protein: ${new_total_protein}/${protein_goal}`
+    carb_total.innerText = `Carbs: ${new_total_carb}/${carb_goal}`
+    fat_total.innerText = `Fat: ${new_total_fat}/${fat_goal}`
+    calorie_total.innerText = `Calories: ${new_total_cals}/${calorie_goal}`
+
+    fetch('editfoods', {
+        method: 'POST',
+        body: JSON.stringify({
+            item:id,
+            protein: new_protein,
+            carbs: new_carb,
+            fat: new_fat,
+            fiber: new_fiber,
+            cals: new_cals,
+            serving: new_serving,
+            old_protein: old_protein,
+            old_carbs: old_carbs,
+            old_fat: old_fats,
+            old_fiber: old_fiber,
+            old_cals: old_cals,
+            old_serving: old_serving
+        }),
+      })
+      .then(response => response.json())
+      .then(ans => console.log(ans));
 }
 
 function updatevalues(info){
@@ -189,11 +302,11 @@ function updatevalues(info){
     let newserving = this.firstChild.value
 
     let protein = document.getElementById(`${id}-protein`)
-    let carbs = document.getElementById(`${id}-carb`)
-    let fats = document.getElementById(`${id}-fat`)
+    let carbs = document.getElementById(`${id}-carbs`)
+    let fats = document.getElementById(`${id}-fats`)
     let fiber = document.getElementById(`${id}-fiber`)
     let cals = document.getElementById(`${id}-calories`)
-    let sub_data = document.getElementById(`${id}-submissions`)
+    //let sub_data = document.getElementById(`${id}-submissions`)
 
 
     factor = newserving / 100
