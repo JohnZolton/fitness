@@ -142,10 +142,7 @@ function addfood(){
     let = fat_val = Math.round(fats*portion_factor)
     let = fiber_val = Math.round(fiber*portion_factor)
     let = calorie_val = Math.round(cals*portion_factor)
-
-    let nutrition = `${item};${protein_val};${carb_val};${fat_val};${fiber_val};${calorie_val}`
-    //console.log(nutrition)
-    
+   
     fetch('addfoods', {
         method: 'POST',
         body: JSON.stringify({
@@ -244,7 +241,6 @@ function savechanges() {
     let new_cals = cals.innerText
     let new_serving = serving.firstElementChild.value
     
-
     this.style.display = 'none'
     document.getElementById(`${id}-edit`).style.display='block'
     document.getElementById(`${id}-quantity`).innerHTML = new_serving
@@ -252,8 +248,10 @@ function savechanges() {
     let protein_total = document.getElementById('total-protein')
     let carb_total = document.getElementById('total-carbs')
     let fat_total = document.getElementById('total-fat')
+    let fiber_total = document.getElementById('total-fiber')
     let calorie_total = document.getElementById('total-cals')
     
+
     let protein_goal = protein_total.attributes.data_goal.value
     let carb_goal = carb_total.attributes.data_goal.value
     let fat_goal = fat_total.attributes.data_goal.value
@@ -262,17 +260,26 @@ function savechanges() {
     let protein_current = protein_total.attributes.data_current.value
     let carb_current = carb_total.attributes.data_current.value
     let fat_current = fat_total.attributes.data_current.value
+    let fiber_current = fiber_total.attributes.data_current.value
     let calorie_current = calorie_total.attributes.data_current.value
     
     let new_total_protein = parseInt(protein_current) + parseInt(new_protein) - parseInt(old_protein)
     let new_total_carb = parseInt(carb_current) + parseInt(new_carb) - parseInt(old_carbs)
     let new_total_fat = parseInt(fat_current) + parseInt(new_fat) - parseInt(old_fats)
+    let new_total_fiber = parseInt(fiber_current) + parseInt(new_fiber) - parseInt(old_fiber)
     let new_total_cals = parseInt(calorie_current) + parseInt(new_cals) - parseInt(old_cals)
 
     protein_total.innerText = `Protein: ${new_total_protein}/${protein_goal}`
     carb_total.innerText = `Carbs: ${new_total_carb}/${carb_goal}`
     fat_total.innerText = `Fat: ${new_total_fat}/${fat_goal}`
+    fiber_total.innerText = `Fiber: ${new_total_fiber}`
     calorie_total.innerText = `Calories: ${new_total_cals}/${calorie_goal}`
+
+    protein_total.attributes.data_current.value = new_total_protein
+    carb_total.attributes.data_current.value = new_total_carb
+    fat_total.attributes.data_current.value = new_total_fat
+    fiber_total.attributes.data_current.value = new_total_fiber
+    calorie_total.attributes.data_current.value = new_total_cals
 
     fetch('editfoods', {
         method: 'POST',

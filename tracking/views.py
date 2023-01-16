@@ -101,6 +101,7 @@ def index(request):
         'protein': totals[0],
         'carbs': totals[1],
         'fats': totals[2],
+        'fiber':totals[3],
         'calories': totals[4],
         'bodyweight': bodyweight,
         'steps': steps,
