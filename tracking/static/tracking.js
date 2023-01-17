@@ -6,15 +6,19 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('food').addEventListener("input", autocomplete)
     document.getElementById('food').addEventListener('blur', clearautocomplete)
     let editbuttons = document.querySelectorAll('.edit-button')
-    //console.log(editbuttons)
+
     editbuttons.forEach(child => {
         child.addEventListener('click', editfoods)
       })
     let savebuttons = document.querySelectorAll('.save-button')
-      //console.log(editbuttons)
+
       savebuttons.forEach(child => {
           child.addEventListener('click', savechanges)
         })
+    let removebuttons = document.querySelectorAll('.remove-button')
+        removebuttons.forEach(child => {
+            child.addEventListener('click', removeitem)
+          })
 })
 
 function clearautocomplete(){
@@ -160,17 +164,57 @@ function addfood(){
       
       let newDiv = document.createElement("tr");
       newDiv.innerHTML = `
-      <td>${item}</td>
-      <td>${protein_val}</td>
-      <td>${carb_val}</td>
-      <td>${fat_val}</td>
-      <td>${fiber_val}</td>
-      <td>${calorie_val}</td>
-      <td>${serving}</td>
-      <button id='${item}-edit' class='edit-button'>edit</button>`
+      <td class='saved-meal' id='${item}-name' data_original='${item}'>${item}</td>
+      <td class='saved-meal' id='${item}-protein' data_original='${protein_val}'>${protein_val}</td>
+      <td class='saved-meal' id='${item}-carbs' data_original='${carb_val}'>${carb_val}</td>
+      <td class='saved-meal' id='${item}-fats' data_original='${fat_val}'>${fat_val}</td>
+      <td class='saved-meal' id='${item}-fiber' data_original='${fiber_val}'>${fiber_val}</td>
+      <td class='saved-meal' id='${item}-calories' data_original='${calorie_val}'>${calorie_val}</td>
+      <td class='saved-meal' id='${item}-quantity' data_original='${serving}'>${serving}</td>
+      <button id='${item}-edit' class='edit-button' value='${item}'>edit</button>
+      <button id="${item}-save" class="save-button" value="${item}" hidden>save</button>
+      <button id="${item}-remove" class="remove-button" value="${item}">remove</button>`
 
       document.getElementById("totals-table").appendChild(newDiv)
       document.getElementById(`${item}-edit`).addEventListener('click', editfoods)
+      document.getElementById(`${item}-save`).addEventListener('click', savechanges)
+      document.getElementById(`${item}-remove`).addEventListener('click', removeitem)
+
+      let protein_total = document.getElementById('total-protein')
+      let carb_total = document.getElementById('total-carbs')
+      let fat_total = document.getElementById('total-fat')
+      let fiber_total = document.getElementById('total-fiber')
+      let calorie_total = document.getElementById('total-cals')
+
+      let protein_current = protein_total.attributes.data_current.value
+      let carb_current = carb_total.attributes.data_current.value
+      let fat_current = fat_total.attributes.data_current.value
+      let fiber_current = fiber_total.attributes.data_current.value
+      let calorie_current = calorie_total.attributes.data_current.value
+
+      let protein_goal = protein_total.attributes.data_goal.value
+      let carb_goal = carb_total.attributes.data_goal.value
+      let fat_goal = fat_total.attributes.data_goal.value
+      let calorie_goal = calorie_total.attributes.data_goal.value
+      
+      let new_total_protein = parseInt(protein_current) + parseInt(protein_val)
+      let new_total_carb = parseInt(carb_current) + parseInt(carb_val)
+      let new_total_fat = parseInt(fat_current) + parseInt(fat_val)
+      let new_total_fiber = parseInt(fiber_current) + parseInt(fiber_val)
+      let new_total_cals = parseInt(calorie_current) + parseInt(calorie_val)
+  
+      protein_total.innerText = `Protein: ${new_total_protein}/${protein_goal}`
+      carb_total.innerText = `Carbs: ${new_total_carb}/${carb_goal}`
+      fat_total.innerText = `Fat: ${new_total_fat}/${fat_goal}`
+      fiber_total.innerText = `Fiber: ${new_total_fiber}`
+      calorie_total.innerText = `Calories: ${new_total_cals}/${calorie_goal}`
+  
+      protein_total.attributes.data_current.value = new_total_protein
+      carb_total.attributes.data_current.value = new_total_carb
+      fat_total.attributes.data_current.value = new_total_fat
+      fiber_total.attributes.data_current.value = new_total_fiber
+      calorie_total.attributes.data_current.value = new_total_cals
+
 
     hideresults(document.getElementById('display-table'))
     document.getElementById('food').value = ''
@@ -356,4 +400,8 @@ function hideresults(parent) {
     <th>Calories</th>`
 
     document.getElementById("display-table").appendChild(newDiv)
+}
+
+function removeitem(){
+    console.log('TODO: remove item')
 }

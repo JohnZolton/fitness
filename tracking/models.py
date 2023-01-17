@@ -19,6 +19,7 @@ class Metrics(models.Model):
     bodyweight = models.FloatField(default=None, null=True)
     calories = models.IntegerField(default=0, null=True)
     contents = models.TextField(default=None, null=True)
+    edited = models.BooleanField(null=True)
 
     class Meta:
         constraints = [
