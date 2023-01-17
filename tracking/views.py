@@ -91,8 +91,31 @@ def index(request):
                     totals[i-1] += int(food[i])
         bodyweight = metrics.bodyweight
         
-        if cur_user.auto_update_steps:
-            print('TODO: auto update steps')
+        if cur_user.auto_update_steps and not cur_user.yesterday_synced:   
+            email = keys.garmin_email
+            password = keys.garmin_pass
+            today = datetime.date.today()
+
+            yesterday = today - datetime.timedelta(days=1)
+            api = Garmin(email, password)
+            api.login()
+            fields = ['calendarDate','totalSteps']
+            format= '%Y-%m-%d'
+            total_data = []
+            
+            yesterdays_data = api.get_stats(yesterday)
+            concise_data = []
+            for field in fields:
+                concise_data.append(yesterdays_data[field])
+
+            metric, _ = Metrics.objects.get_or_create(account=cur_user, date=concise_data[0])
+            metric.steps = concise_data[1]
+
+            metric.save()
+            cur_user.yesterday_synced = True
+            cur_user.save()
+
+
     else:
         bodyweight = None
 

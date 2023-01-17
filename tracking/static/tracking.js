@@ -171,14 +171,31 @@ function addfood(){
       <td class='saved-meal' id='${item}-fiber' data_original='${fiber_val}'>${fiber_val}</td>
       <td class='saved-meal' id='${item}-calories' data_original='${calorie_val}'>${calorie_val}</td>
       <td class='saved-meal' id='${item}-quantity' data_original='${serving}'>${serving}</td>
-      <button id='${item}-edit' class='edit-button' value='${item}'>edit</button>
-      <button id="${item}-save" class="save-button" value="${item}" hidden>save</button>
-      <button id="${item}-remove" class="remove-button" value="${item}">remove</button>`
+      <td>
+        <button id='${item}-edit' class='edit-button' value='${item}'>edit</button>
+        <button id="${item}-save" class="save-button" value="${item}" hidden>save</button>  
+      </td>
+      <td>
+        <button id="${item}-remove" class="remove-button" value="${item}">remove</button>
+      </td>`
 
       document.getElementById("totals-table").appendChild(newDiv)
-      document.getElementById(`${item}-edit`).addEventListener('click', editfoods)
-      document.getElementById(`${item}-save`).addEventListener('click', savechanges)
-      document.getElementById(`${item}-remove`).addEventListener('click', removeitem)
+
+      let editbuttons = document.querySelectorAll('.edit-button')
+      editbuttons.forEach(child => {
+          child.addEventListener('click', editfoods)
+        })
+      let savebuttons = document.querySelectorAll('.save-button')
+        savebuttons.forEach(child => {
+            child.addEventListener('click', savechanges)
+          })
+      let removebuttons = document.querySelectorAll('.remove-button')
+          removebuttons.forEach(child => {
+              child.addEventListener('click', removeitem)
+            })
+      //document.getElementById(`${item}-edit`).addEventListener('click', editfoods)
+      //document.getElementById(`${item}-save`).addEventListener('click', savechanges)
+      //document.getElementById(`${item}-remove`).addEventListener('click', removeitem)
 
       let protein_total = document.getElementById('total-protein')
       let carb_total = document.getElementById('total-carbs')

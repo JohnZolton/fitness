@@ -11,6 +11,7 @@ class User(AbstractUser):
     last_step_sync_date = models.DateField(default=None, null=True)
     auto_update_steps = models.BooleanField()
     auto_copy_previous = models.BooleanField()
+    yesterday_synced = models.BooleanField()
 
 class Metrics(models.Model):
     account = models.ForeignKey(User, on_delete=models.CASCADE)
