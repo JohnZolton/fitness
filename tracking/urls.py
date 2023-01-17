@@ -15,4 +15,5 @@ urlpatterns = [
     path('copyprevious', views.copyprevious, name='copyprevious'),
     path('enablecopyprevious', views.enablecopyprevious, name='enablecopyprevious'),
     path('disablecopyprevious', views.disablecopyprevious, name='disablecopyprevious'),
+    path('removefood', views.removefood, name='removefood'),
 ]

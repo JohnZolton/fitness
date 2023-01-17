@@ -55,7 +55,7 @@ function autocomplete(event){
             search_res.innerHTML = `${food['description']}`
             search_res.innerHTML += `<input type="hidden" value=${food['description']}>`
             search_res.addEventListener('click', function(){
-                console.log(this.innerText)
+                
                 document.getElementById('food').value = this.innerText
                 search()
                 closeall()
@@ -223,8 +223,8 @@ function addfood(){
 function editfoods() {
     let id = this.attributes.value.value
     
-    //old_serving = document.querySelector
-    quant = document.getElementById(`${id}-quantity`)
+    this.parentElement.parentElement.childNodes.item(13)
+    quant = this.parentElement.parentElement.childNodes.item(13)
     
     let old_val = quant.innerText
     quant.innerHTML = `
@@ -233,7 +233,7 @@ function editfoods() {
     quant.addEventListener('input', changevalues)
 
     this.style.display = 'none'
-    document.getElementById(`${id}-save`).style.display='block'
+    this.parentElement.parentElement.childNodes.item(15).lastElementChild.style.display='block'
 }
 
 function changevalues() {
@@ -243,12 +243,14 @@ function changevalues() {
     
     let factor = newval / oldval
 
-    let protein = document.getElementById(`${id}-protein`)
-    let carbs = document.getElementById(`${id}-carbs`)
-    let fats = document.getElementById(`${id}-fats`)
-    let fiber = document.getElementById(`${id}-fiber`)
-    let cals = document.getElementById(`${id}-calories`)
-    //console.log(protein, carbs, fats, fiber, cals)
+    this.parentElement.childNodes.item(3)
+
+    let protein = this.parentElement.childNodes.item(3)
+    let carbs = this.parentElement.childNodes.item(5)
+    let fats = this.parentElement.childNodes.item(7)
+    let fiber = this.parentElement.childNodes.item(9)
+    let cals = this.parentElement.childNodes.item(11)
+
     newprotein = Math.round(protein.attributes.data_original.value * factor)
     newcarb = Math.round(carbs.attributes.data_original.value * factor)
     newfat = Math.round(fats.attributes.data_original.value * factor)
@@ -264,12 +266,14 @@ function changevalues() {
 
 function savechanges() {
     let id = this.attributes.value.value
-    let protein = document.getElementById(`${id}-protein`)
-    let carbs = document.getElementById(`${id}-carbs`)
-    let fats = document.getElementById(`${id}-fats`)
-    let fiber = document.getElementById(`${id}-fiber`)
-    let cals = document.getElementById(`${id}-calories`)
-    let serving = document.getElementById(`${id}-quantity`)
+
+    console.log(this.parentElement.parentElement.children)
+    let protein = this.parentElement.parentElement.children.item(1)
+    let carbs = this.parentElement.parentElement.children.item(2)
+    let fats = this.parentElement.parentElement.children.item(3)
+    let fiber = this.parentElement.parentElement.children.item(4)
+    let cals = this.parentElement.parentElement.children.item(5)
+    let serving = this.parentElement.parentElement.children.item(6)
 
     let old_protein = protein.attributes.data_original.value
     let old_carbs = carbs.attributes.data_original.value
@@ -283,11 +287,14 @@ function savechanges() {
     let new_fat = fats.innerText
     let new_fiber = fiber.innerText
     let new_cals = cals.innerText
+    //console.log(serving)
     let new_serving = serving.firstElementChild.value
     
     this.style.display = 'none'
-    document.getElementById(`${id}-edit`).style.display='block'
-    document.getElementById(`${id}-quantity`).innerHTML = new_serving
+    this.parentElement.parentElement.childNodes.item(15).firstElementChild.style.display = 'block'
+    this.parentElement.parentElement.childNodes.item(15).lastElementChild.style.display='none'
+    //ocument.getElementById(`${id}-edit`).style.display='block'
+    serving.innerHTML = new_serving
 
     let protein_total = document.getElementById('total-protein')
     let carb_total = document.getElementById('total-carbs')
@@ -403,5 +410,64 @@ function hideresults(parent) {
 }
 
 function removeitem(){
-    console.log('TODO: remove item')
+    let id = this.attributes.value.value
+
+    let item = document.getElementById(`${id}-name`).innerText
+    let serving = document.getElementById(`${id}-quantity`).innerText
+    let = protein_val = document.getElementById(`${id}-protein`).innerText
+    let = carb_val = document.getElementById(`${id}-carbs`).innerText
+    let = fat_val = document.getElementById(`${id}-fats`).innerText
+    let = fiber_val = document.getElementById(`${id}-fiber`).innerText
+    let = calorie_val = document.getElementById(`${id}-calories`).innerText
+
+    fetch('removefood', {
+        method: 'POST',
+        body: JSON.stringify({
+            item:item,
+            protein:protein_val,
+            carbs: carb_val,
+            fat: fat_val,
+            fiber: fiber_val,
+            cals: calorie_val,
+            serving:serving
+        }),
+      })
+      .then(response => response.json())
+      .then(ans => console.log(ans));
+      this.parentElement.parentElement.remove()
+
+      let protein_total = document.getElementById('total-protein')
+      let carb_total = document.getElementById('total-carbs')
+      let fat_total = document.getElementById('total-fat')
+      let fiber_total = document.getElementById('total-fiber')
+      let calorie_total = document.getElementById('total-cals')
+
+      let protein_current = protein_total.attributes.data_current.value
+      let carb_current = carb_total.attributes.data_current.value
+      let fat_current = fat_total.attributes.data_current.value
+      let fiber_current = fiber_total.attributes.data_current.value
+      let calorie_current = calorie_total.attributes.data_current.value
+      
+      let protein_goal = protein_total.attributes.data_goal.value
+      let carb_goal = carb_total.attributes.data_goal.value
+      let fat_goal = fat_total.attributes.data_goal.value
+      let calorie_goal = calorie_total.attributes.data_goal.value
+
+      let new_total_protein = parseInt(protein_current) - parseInt(protein_val)
+      let new_total_carb = parseInt(carb_current) - parseInt(carb_val)
+      let new_total_fat = parseInt(fat_current) - parseInt(fat_val)
+      let new_total_fiber = parseInt(fiber_current) - parseInt(fiber_val)
+      let new_total_cals = parseInt(calorie_current) - parseInt(calorie_val)
+  
+      protein_total.innerText = `Protein: ${new_total_protein}/${protein_goal}`
+      carb_total.innerText = `Carbs: ${new_total_carb}/${carb_goal}`
+      fat_total.innerText = `Fat: ${new_total_fat}/${fat_goal}`
+      fiber_total.innerText = `Fiber: ${new_total_fiber}`
+      calorie_total.innerText = `Calories: ${new_total_cals}/${calorie_goal}`
+  
+      protein_total.attributes.data_current.value = new_total_protein
+      carb_total.attributes.data_current.value = new_total_carb
+      fat_total.attributes.data_current.value = new_total_fat
+      fiber_total.attributes.data_current.value = new_total_fiber
+      calorie_total.attributes.data_current.value = new_total_cals
 }

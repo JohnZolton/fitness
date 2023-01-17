@@ -78,7 +78,6 @@ def index(request):
         metrics, _ = Metrics.objects.get_or_create(account=request.user, date=datetime.date.today())
 
         if cur_user.auto_copy_previous and not metrics.edited:
-            print('yay')
             yesterday = datetime.date.today() - datetime.timedelta(days=1)
             yesterday_metric, created = Metrics.objects.get_or_create(account=request.user, date=yesterday)
             metrics.contents = yesterday_metric.contents
@@ -86,10 +85,8 @@ def index(request):
             
         if metrics.contents:
             meal_data = eval(metrics.contents)
-            print(meal_data)
             for food in meal_data:
                 res.append(food)
-                print(food)
                 for i in range(1, len(food)-1):
                     totals[i-1] += int(food[i])
         bodyweight = metrics.bodyweight
@@ -129,7 +126,6 @@ def addfoods(request):
             meal.contents = eval(meal.contents) + newitem
         else:
             meal.contents = newitem
-    print(meal.contents)
     meal.edited = True
     meal.save()
     response = {'response':'nice'}
@@ -144,7 +140,6 @@ def editfoods(request):
     user = User.objects.get(id=request.user.id)
     meal = Metrics.objects.get(account=user, date=datetime.date.today())
     content = eval(meal.contents)
-    print(meal.contents)
     newcontent = []
     for line in content:
         if line == olditem[0]:
@@ -304,3 +299,26 @@ def disablecopyprevious(request):
         user.save()
 
     return HttpResponseRedirect(reverse('settings'))
+
+@csrf_exempt
+def removefood(request):
+    item = json.loads(request.body)
+    removeditem = [[item['item'],int(item['protein']), int(item['carbs']), int(item['fat']), int(item['fiber']), int(item['cals']), int(item['serving'])]]
+
+    user = User.objects.get(id=request.user.id)
+    meal = Metrics.objects.get(account=user, date=datetime.date.today())
+    content = eval(meal.contents)
+
+    newcontent = []
+    removed = False
+    for line in content:
+        if line == removeditem[0] and not removed:
+            removed = True
+        else:
+            newcontent.append(line)
+    
+    meal.contents = newcontent
+    meal.edited = True
+    meal.save()
+
+    return HttpResponseRedirect(reverse('index'))
