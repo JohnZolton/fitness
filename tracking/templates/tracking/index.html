@@ -14,7 +14,13 @@
     {% endif %}
 
     <h2>Meal History</h2>
-    <div><button>Prev</button>{{date}}<button>Next</button></div>
+    <div>
+        <button id="prev">Prev</button>
+    </div>
+        <div id="date">{{date}}</div>
+    <div>
+        <button id="next">Next</button>
+    </div>
     <form action = "{% url 'copyprevious' %}" method="post">
         {% csrf_token %}
         <button>Copy Previous Day</button>

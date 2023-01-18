@@ -345,3 +345,20 @@ def removefood(request):
     meal.save()
 
     return HttpResponseRedirect(reverse('index'))
+
+@csrf_exempt
+def displayprevious(request):
+    item = json.loads(request.body)
+    user = User.objects.get(id=request.user.id)
+    date = item['date']
+    print(date)
+    meallog, created = Metrics.objects.get_or_create(account=user, date=date)
+    response = {'response':'nice'}
+    try:
+        meal_data = eval(meallog.contents)
+    except TypeError:
+        meal_data = []
+    response = {'response': meal_data}
+
+    
+    return HttpResponse(json.dumps(response), content_type='application/json')

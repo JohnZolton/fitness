@@ -1,10 +1,15 @@
 var counter = 1
 const target = document.getElementById('food')
+let today = new Date()
+let dateOffset = 24*60*60*1000 // 1 day
+
 
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('lookup').addEventListener("submit", search);
     document.getElementById('food').addEventListener("input", autocomplete)
     document.getElementById('food').addEventListener('blur', clearautocomplete)
+    document.getElementById('prev').addEventListener('click', displayprevious)
+    document.getElementById('next').addEventListener('click', displaynext)
     let editbuttons = document.querySelectorAll('.edit-button')
 
     editbuttons.forEach(child => {
@@ -26,6 +31,95 @@ function clearautocomplete(){
         closeall()
     }, 200);
 }
+
+function displayprevious(){
+    today.setTime(today.getTime() - dateOffset);
+    changedisplay(today)
+    document.getElementById('date').innerText = today.toLocaleDateString('en-US', {
+        day : 'numeric',
+        month : 'short',
+        year : 'numeric'
+    });
+}
+
+function displaynext(){
+    today.setTime(today.getTime() + dateOffset);
+    changedisplay(today)
+    document.getElementById('date').innerText = today.toLocaleDateString('en-US', {
+        day : 'numeric',
+        month : 'short',
+        year : 'numeric'
+    });
+}
+
+function changedisplay(today){
+    // delete everything but the header of table
+    let table = document.getElementById('totals-table')
+    table.innerHTML = `
+        <tr id="header">
+        <th>Item</th>
+        <th>Protein</th>
+        <th>Carb</th>
+        <th>Fat</th>
+        <th>Fiber</th>
+        <th>Calories</th>
+        <th>Serving (g)</th>
+    </tr>`
+    fetch('displayprevious', {
+        method: 'POST',
+        body: JSON.stringify({
+            date: today.toISOString().slice(0, 10)
+        }),
+      })
+      .then(response => response.json())
+      .then(ans => {
+        //console.log(ans['response'])
+        for (let i = 0; i < ans['response'].length; i++){
+            //console.log(ans['response'][i])
+            let item = ans['response'][i][0]
+            let protein_val = ans['response'][i][1]
+            let carb_val = ans['response'][i][2]
+            let fat_val = ans['response'][i][3]
+            let fiber_val = ans['response'][i][4]
+            let calorie_val = ans['response'][i][5]
+            let serving = ans['response'][i][6]
+
+
+            let newDiv = document.createElement("tr");
+            newDiv.innerHTML = `
+            <td class='saved-meal' id='${item}-name' data_original='${item}'>${item}</td>
+            <td class='saved-meal' id='${item}-protein' data_original='${protein_val}'>${protein_val}</td>
+            <td class='saved-meal' id='${item}-carbs' data_original='${carb_val}'>${carb_val}</td>
+            <td class='saved-meal' id='${item}-fats' data_original='${fat_val}'>${fat_val}</td>
+            <td class='saved-meal' id='${item}-fiber' data_original='${fiber_val}'>${fiber_val}</td>
+            <td class='saved-meal' id='${item}-calories' data_original='${calorie_val}'>${calorie_val}</td>
+            <td class='saved-meal' id='${item}-quantity' data_original='${serving}'>${serving}</td>
+            <td>
+              <button id='${item}-edit' class='edit-button' value='${item}'>edit</button>
+              <button id="${item}-save" class="save-button" value="${item}" hidden>save</button>  
+            </td>
+            <td>
+              <button id="${item}-remove" class="remove-button" value="${item}">remove</button>
+            </td>`
+      
+            document.getElementById("totals-table").appendChild(newDiv)
+      
+            let editbuttons = document.querySelectorAll('.edit-button')
+            editbuttons.forEach(child => {
+                child.addEventListener('click', editfoods)
+              })
+            let savebuttons = document.querySelectorAll('.save-button')
+              savebuttons.forEach(child => {
+                  child.addEventListener('click', savechanges)
+                })
+            let removebuttons = document.querySelectorAll('.remove-button')
+                removebuttons.forEach(child => {
+                    child.addEventListener('click', removeitem)
+                  })
+        }
+      });
+}
+
 
 
 function autocomplete(event){
