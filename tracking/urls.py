@@ -12,4 +12,9 @@ urlpatterns = [
     path('viewdata', views.viewdata, name='viewdata'),
     path('addfoods', views.addfoods, name='addfoods'),
     path('editfoods', views.editfoods, name='editfoods'),
+    path('copyprevious', views.copyprevious, name='copyprevious'),
+    path('enablecopyprevious', views.enablecopyprevious, name='enablecopyprevious'),
+    path('disablecopyprevious', views.disablecopyprevious, name='disablecopyprevious'),
+    path('removefood', views.removefood, name='removefood'),
+    path('displayprevious', views.displayprevious, name='displayprevious'),
 ]

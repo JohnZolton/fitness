@@ -24,6 +24,49 @@
             <div id="calories" data-value="{{cals}}">Calories: {{cals}}</div>
             <button type="submit">Save</button>
         </form>
+        <h3>Step Tracking</h3>
+        <div>This only works for Garmin smart watches</div>
+        <form action="{% url 'steps' %}" method="post">
+            {% csrf_token %}
+            <div>
+                <label>Garmin email:</label>
+                <input type="email" placeholder="" name="email">
+            </div>
+            <div>
+              <label>Garmin password:</label>
+            <input type="password" placeholder="" name="password">  
+            </div>
+            <div>
+               <label>Until how many days ago?</label>
+            <input type="number" name="days"> 
+            </div>
+            {% if autostep %}
+            <label for="copyprev">Disable automatic updates</label>
+            <input type="checkbox" name="disable">
+            {% else %}
+            <label for="copyprev">Enable automatic updates</label>
+            <input type="checkbox" name="enable">
+            {% endif %}
+            <div>
+                <button type="submit">Submit</button>
+            </div>
+        </form>
+        <h3>Nutrition Tracking</h3>
+        {% if not autocopy %}
+        <form action = "{% url 'enablecopyprevious' %}" method="post">
+            {% csrf_token %}
+            <label for="copyprev">Automatically copy previous day</label>
+            <input type="checkbox" name="enable">
+            <button type="submit">Save</button>
+        </form>
+        {% else %}
+        <form action = "{% url 'disablecopyprevious' %}" method="post">
+            {% csrf_token %}
+            <label for="copyprev">Disable autocopy previous day</label>
+            <input type="checkbox" name="disable">
+            <button type="submit">Save</button>
+        </form>
+        {% endif %}
 
     {% else %}
     <div>Sign in</div>

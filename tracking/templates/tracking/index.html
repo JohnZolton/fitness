@@ -12,15 +12,23 @@
     {% else %}
     <div>Body weight: {{bodyweight}}</div>
     {% endif %}
-    
-    <form action = "{% url 'steps' %}" method="get">
-        <button type="submit">Sync Steps</button>
-    </form>
 
-    {% if meals %}
     <h2>Meal History</h2>
     <div>
+        <button id="prev">Prev</button>
+    </div>
+        <div id="date">{{date}}</div>
+    <div>
+        <button id="next">Next</button>
+    </div>
+    <form id="copyprevious" action = "{% url 'copyprevious' %}" method="post">
+        {% csrf_token %}
+        <button>Copy Previous Day</button>
+    </form>
+    
+    <div>
         <table id="totals-table">
+            
             <tr id="header">
                 <th>Item</th>
                 <th>Protein</th>
@@ -30,6 +38,7 @@
                 <th>Calories</th>
                 <th>Serving (g)</th>
             </tr>
+            {% if meals %}
             {% for meal in meals %}
             <tr>
                 <td class="saved-meal" id="{{meal.0}}-name" data_original="{{meal.0}}">{{meal.0}}</td>
@@ -44,8 +53,12 @@
                     <button id="{{meal.0}}-edit" class="edit-button" value="{{meal.0}}">edit</button>
                     <button id="{{meal.0}}-save" class="save-button" value="{{meal.0}}" hidden>save</button>
                 </td>
+                <td>
+                   <button id="{{meal.0}}-remove" class="remove-button" value="{{meal.0}}" >remove</button>
+                </td>
             </tr>
             {% endfor %}
+            {% endif %}
             
         </table>
         <div id="total-protein" data_goal = '{{user.protein_goal}}' data_current="{{protein}}">
@@ -64,7 +77,7 @@
             Calories: {{calories}}/{{user.calorie_goal}}
         </div>
     </div>
-    {% endif %}
+    
 
     <h2>Add Foods</h2>
     <div id="searchbox">
