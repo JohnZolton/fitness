@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('food').addEventListener('blur', clearautocomplete)
     document.getElementById('prev').addEventListener('click', displayprevious)
     document.getElementById('next').addEventListener('click', displaynext)
+    
     let editbuttons = document.querySelectorAll('.edit-button')
 
     editbuttons.forEach(child => {
@@ -65,8 +66,10 @@ function changedisplay(today){
         <th>Calories</th>
         <th>Serving (g)</th>
     </tr>`
+    let csrf = getcookie('csrftoken');
     fetch('displayprevious', {
         method: 'POST',
+        headers:{'X-CSRFToken': csrf},
         body: JSON.stringify({
             date: today.toISOString().slice(0, 10)
         }),
@@ -262,9 +265,10 @@ function addfood(){
     let = fat_val = Math.round(fats*portion_factor)
     let = fiber_val = Math.round(fiber*portion_factor)
     let = calorie_val = Math.round(cals*portion_factor)
-   
+    let csrf = getcookie('csrftoken');
     fetch('addfoods', {
         method: 'POST',
+        headers:{'X-CSRFToken': csrf},
         body: JSON.stringify({
             item:item,
             protein:protein_val,
@@ -465,9 +469,10 @@ function savechanges() {
     fat_total.attributes.data_current.value = new_total_fat
     fiber_total.attributes.data_current.value = new_total_fiber
     calorie_total.attributes.data_current.value = new_total_cals
-
+    let csrf = getcookie('csrftoken');
     fetch('editfoods', {
         method: 'POST',
+        headers:{'X-CSRFToken': csrf},
         body: JSON.stringify({
             item:id,
             protein: new_protein,
@@ -554,9 +559,10 @@ function removeitem(){
     let = fat_val = document.getElementById(`${id}-fats`).innerText
     let = fiber_val = document.getElementById(`${id}-fiber`).innerText
     let = calorie_val = document.getElementById(`${id}-calories`).innerText
-
+    let csrf = getcookie('csrftoken');
     fetch('removefood', {
         method: 'POST',
+        headers:{'X-CSRFToken': csrf},
         body: JSON.stringify({
             item:item,
             protein:protein_val,
@@ -606,4 +612,20 @@ function removeitem(){
       fat_total.attributes.data_current.value = new_total_fat
       fiber_total.attributes.data_current.value = new_total_fiber
       calorie_total.attributes.data_current.value = new_total_cals
+}
+
+
+function getcookie(name) {
+    let cookievalue = null;
+    if (document.cookie && document.cookie !== '') {
+        let cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            let cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookievalue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookievalue;
 }

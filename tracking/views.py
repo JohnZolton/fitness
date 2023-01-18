@@ -136,7 +136,7 @@ def index(request):
  
     return render(request, 'tracking/index.html', context)
 
-@csrf_exempt 
+
 def addfoods(request):
     item = json.loads(request.body)
     print(item)
@@ -158,7 +158,7 @@ def addfoods(request):
     response = {'response':'nice'}
     return HttpResponse(json.dumps(response), content_type='application/json')
 
-@csrf_exempt
+
 def editfoods(request):
     item = json.loads(request.body)
     newitem = [[item['item'],int(item['protein']), int(item['carbs']), int(item['fat']), int(item['fiber']), int(item['cals']), int(item['serving'])]]
@@ -327,7 +327,7 @@ def disablecopyprevious(request):
 
     return HttpResponseRedirect(reverse('settings'))
 
-@csrf_exempt
+
 def removefood(request):
     item = json.loads(request.body)
     removeditem = [[item['item'],int(item['protein']), int(item['carbs']), int(item['fat']), int(item['fiber']), int(item['cals']), int(item['serving'])]]
@@ -350,7 +350,7 @@ def removefood(request):
 
     return HttpResponseRedirect(reverse('index'))
 
-@csrf_exempt
+
 def displayprevious(request):
     item = json.loads(request.body)
     user = User.objects.get(id=request.user.id)
