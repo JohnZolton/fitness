@@ -21,7 +21,7 @@
     <div>
         <button id="next">Next</button>
     </div>
-    <form action = "{% url 'copyprevious' %}" method="post">
+    <form id="copyprevious" action = "{% url 'copyprevious' %}" method="post">
         {% csrf_token %}
         <button>Copy Previous Day</button>
     </form>

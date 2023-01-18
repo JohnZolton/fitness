@@ -143,6 +143,12 @@ function changedisplay(today){
         fiber_total.innerText = `Fiber: ${new_total_fiber}`
         calorie_total.innerText = `Calories: ${new_total_cals}/${calorie_goal}`
       });
+
+      if (new Date().toISOString().slice(0, 10) == today.toISOString().slice(0, 10)){
+        document.getElementById('copyprevious').style.display = 'block'
+      } else {
+        document.getElementById('copyprevious').style.display = 'none'
+      }
 }
 
 
