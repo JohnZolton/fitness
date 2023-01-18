@@ -117,6 +117,28 @@ function changedisplay(today){
                     child.addEventListener('click', removeitem)
                   })
         }
+        let protein_total = document.getElementById('total-protein')
+        let carb_total = document.getElementById('total-carbs')
+        let fat_total = document.getElementById('total-fat')
+        let fiber_total = document.getElementById('total-fiber')
+        let calorie_total = document.getElementById('total-cals')
+
+        let protein_goal = protein_total.attributes.data_goal.value
+        let carb_goal = carb_total.attributes.data_goal.value
+        let fat_goal = fat_total.attributes.data_goal.value
+        let calorie_goal = calorie_total.attributes.data_goal.value
+        
+        new_total_protein = ans['total_protein']
+        new_total_carb = ans['total_carb']
+        new_total_fat= ans['total_fat']
+        new_total_fiber= ans['total_fiber']
+        new_total_cals = ans['total_calories']
+    
+        protein_total.innerText = `Protein: ${new_total_protein}/${protein_goal}`
+        carb_total.innerText = `Carbs: ${new_total_carb}/${carb_goal}`
+        fat_total.innerText = `Fat: ${new_total_fat}/${fat_goal}`
+        fiber_total.innerText = `Fiber: ${new_total_fiber}`
+        calorie_total.innerText = `Calories: ${new_total_cals}/${calorie_goal}`
       });
 }
 
@@ -250,7 +272,8 @@ function addfood(){
             fat: fat_val,
             fiber: fiber_val,
             cals: calorie_val,
-            serving:serving
+            serving:serving,
+            date: today.toISOString().slice(0, 10)
         }),
       })
       .then(response => response.json())
@@ -458,7 +481,8 @@ function savechanges() {
             old_fat: old_fats,
             old_fiber: old_fiber,
             old_cals: old_cals,
-            old_serving: old_serving
+            old_serving: old_serving,
+            date: today.toISOString().slice(0, 10)
         }),
       })
       .then(response => response.json())
@@ -540,7 +564,8 @@ function removeitem(){
             fat: fat_val,
             fiber: fiber_val,
             cals: calorie_val,
-            serving:serving
+            serving:serving,
+            date: today.toISOString().slice(0, 10)
         }),
       })
       .then(response => response.json())

@@ -85,12 +85,15 @@ def index(request):
             
         if metrics.contents:
             meal_data = eval(metrics.contents)
+
             for food in meal_data:
                 res.append(food)
                 for i in range(1, len(food)-1):
                     totals[i-1] += int(food[i])
+            
         bodyweight = metrics.bodyweight
-        
+        metrics.calories = totals[4]
+        metrics.save()
         if cur_user.auto_update_steps and not cur_user.yesterday_synced:   
             email = keys.garmin_email
             password = keys.garmin_pass
@@ -139,9 +142,10 @@ def addfoods(request):
     print(item)
     print(request.user)
     user = User.objects.get(id=request.user.id)
+    date = item['date']
     newitem = [[item['item'],item['protein'], item['carbs'], item['fat'], item['fiber'],item['cals'], int(item['serving'])]]
-    meal, newmeal = Metrics.objects.get_or_create(account=user, date=datetime.date.today())
-
+    meal, newmeal = Metrics.objects.get_or_create(account=user, date=date)
+    
     if newmeal:
         meal.contents = newitem
     else:
@@ -159,9 +163,9 @@ def editfoods(request):
     item = json.loads(request.body)
     newitem = [[item['item'],int(item['protein']), int(item['carbs']), int(item['fat']), int(item['fiber']), int(item['cals']), int(item['serving'])]]
     olditem = [[item['item'],int(item['old_protein']), int(item['old_carbs']), int(item['old_fat']), int(item['old_fiber']),int(item['old_cals']), int(item['old_serving'])]]
-    
+    date = item['date']
     user = User.objects.get(id=request.user.id)
-    meal = Metrics.objects.get(account=user, date=datetime.date.today())
+    meal = Metrics.objects.get(account=user, date=date)
     content = eval(meal.contents)
     newcontent = []
     for line in content:
@@ -327,9 +331,9 @@ def disablecopyprevious(request):
 def removefood(request):
     item = json.loads(request.body)
     removeditem = [[item['item'],int(item['protein']), int(item['carbs']), int(item['fat']), int(item['fiber']), int(item['cals']), int(item['serving'])]]
-
+    print(item['date'])
     user = User.objects.get(id=request.user.id)
-    meal = Metrics.objects.get(account=user, date=datetime.date.today())
+    meal = Metrics.objects.get(account=user, date=item['date'])
     content = eval(meal.contents)
 
     newcontent = []
@@ -342,7 +346,7 @@ def removefood(request):
     
     meal.contents = newcontent
     meal.edited = True
-    meal.save()
+    #meal.save()
 
     return HttpResponseRedirect(reverse('index'))
 
@@ -352,13 +356,25 @@ def displayprevious(request):
     user = User.objects.get(id=request.user.id)
     date = item['date']
     print(date)
+    totals = [0, 0, 0, 0, 0]
     meallog, created = Metrics.objects.get_or_create(account=user, date=date)
     response = {'response':'nice'}
     try:
         meal_data = eval(meallog.contents)
+        for line in meal_data:
+            for i in range(1, len(line)-1):
+                totals[i-1] += line[i]
+        print(totals)
     except TypeError:
         meal_data = []
-    response = {'response': meal_data}
+    response = {
+        'response': meal_data,
+        'total_protein': totals[0],
+        'total_carb': totals[1],
+        'total_fat': totals[2],
+        'total_fiber': totals[3],
+        'total_calories': totals[4]}
+
 
     
     return HttpResponse(json.dumps(response), content_type='application/json')
