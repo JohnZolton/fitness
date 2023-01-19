@@ -117,7 +117,27 @@ def index(request):
             metric.steps = concise_data[1]
 
             metric.save()
-
+        join_date = cur_user.date_joined
+        today = datetime.date.today() 
+        metrics = Metrics.objects.filter(account=cur_user).filter(date__range=[join_date, today]).order_by('date')
+        i = 1
+        dates, bodyweight_data, steps, calories = [],[],[],[]
+        
+        for day in metrics:
+            dates.append(day.date.strftime('%Y-%m-%d'))
+            print(day.bodyweight)
+            print(day.steps)
+            print(day.calories) 
+            
+            if day.steps:
+                steps.append(day.steps)
+            else:
+                steps.append(0)
+            if day.bodyweight:
+                bodyweight_data.append(day.bodyweight)
+            else:
+                bodyweight_data.append(0)
+            calories.append(day.calories)
 
     else:
         bodyweight = None
@@ -131,7 +151,11 @@ def index(request):
         'fiber':totals[3],
         'calories': totals[4],
         'bodyweight': bodyweight,
-        'date': datetime.date.today()
+        'date': datetime.date.today(),
+        'steps_data': steps,
+        'bodyweight_data': bodyweight_data,
+        'calorie_data': calories,
+        'dates':dates,
         }
  
     return render(request, 'tracking/index.html', context)
