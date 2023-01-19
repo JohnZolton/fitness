@@ -3,6 +3,7 @@ const target = document.getElementById('food')
 let today = new Date()
 let dateOffset = 24*60*60*1000 // 1 day
 
+var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
 
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('lookup').addEventListener("submit", search);
@@ -35,17 +36,24 @@ function clearautocomplete(){
 
 function displayprevious(){
     today.setTime(today.getTime() - dateOffset);
+    console.log(today)
     changedisplay(today)
     document.getElementById('date').innerText = today.toLocaleDateString('en-US', {
         day : 'numeric',
         month : 'short',
         year : 'numeric'
     });
+
 }
 
 function displaynext(){
+    console.log('first: ' + today.toLocaleDateString('en-US', {
+        day:'numeric', month: 'short', year:'numeric'
+    }))
     today.setTime(today.getTime() + dateOffset);
+    console.log('second: ' + today)
     changedisplay(today)
+
     document.getElementById('date').innerText = today.toLocaleDateString('en-US', {
         day : 'numeric',
         month : 'short',
@@ -54,6 +62,8 @@ function displaynext(){
 }
 
 function changedisplay(today){
+    let selected_day = new Date(today - tzoffset).toISOString().slice(0,10)
+
     // delete everything but the header of table
     let table = document.getElementById('totals-table')
     table.innerHTML = `
@@ -66,12 +76,13 @@ function changedisplay(today){
         <th>Calories</th>
         <th>Serving (g)</th>
     </tr>`
+    
     let csrf = getcookie('csrftoken');
     fetch('displayprevious', {
         method: 'POST',
         headers:{'X-CSRFToken': csrf},
         body: JSON.stringify({
-            date: today.toISOString().slice(0, 10)
+            date: selected_day
         }),
       })
       .then(response => response.json())
