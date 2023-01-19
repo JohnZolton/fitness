@@ -145,7 +145,7 @@ def addfoods(request):
     date = item['date']
     newitem = [[item['item'],item['protein'], item['carbs'], item['fat'], item['fiber'],item['cals'], int(item['serving'])]]
     meal, newmeal = Metrics.objects.get_or_create(account=user, date=date)
-    
+    print(date)
     if newmeal:
         meal.contents = newitem
     else:
@@ -354,7 +354,7 @@ def removefood(request):
     
     meal.contents = newcontent
     meal.edited = True
-    #meal.save()
+    meal.save()
 
     return HttpResponseRedirect(reverse('index'))
 

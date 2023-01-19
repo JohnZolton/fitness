@@ -275,6 +275,9 @@ function addfood(){
     let fats = info[2].innerHTML
     let cals = info[5].innerHTML
     let fiber = info[4].innerHTML
+
+    
+    let current_day = new Date(today - tzoffset).toISOString().slice(0, 10)
     
     let portion_factor = serving / 100
     let = protein_val = Math.round(protein*portion_factor)
@@ -294,7 +297,7 @@ function addfood(){
             fiber: fiber_val,
             cals: calorie_val,
             serving:serving,
-            date: today.toISOString().slice(0, 10)
+            date: current_day 
         }),
       })
       .then(response => response.json())
@@ -475,6 +478,7 @@ function savechanges() {
     let new_total_fiber = parseInt(fiber_current) + parseInt(new_fiber) - parseInt(old_fiber)
     let new_total_cals = parseInt(calorie_current) + parseInt(new_cals) - parseInt(old_cals)
 
+    let current_day = new Date(today -tzoffset).toISOString().slice(0,10)
     protein_total.innerText = `Protein: ${new_total_protein}/${protein_goal}`
     carb_total.innerText = `Carbs: ${new_total_carb}/${carb_goal}`
     fat_total.innerText = `Fat: ${new_total_fat}/${fat_goal}`
@@ -504,7 +508,7 @@ function savechanges() {
             old_fiber: old_fiber,
             old_cals: old_cals,
             old_serving: old_serving,
-            date: today.toISOString().slice(0, 10)
+            date: current_day
         }),
       })
       .then(response => response.json())
@@ -569,6 +573,7 @@ function hideresults(parent) {
 function removeitem(){
     let id = this.attributes.value.value
 
+    let current_day = new Date(today -tzoffset).toISOString().slice(0,10)
     let item = document.getElementById(`${id}-name`).innerText
     let serving = document.getElementById(`${id}-quantity`).innerText
     let = protein_val = document.getElementById(`${id}-protein`).innerText
@@ -581,14 +586,14 @@ function removeitem(){
         method: 'POST',
         headers:{'X-CSRFToken': csrf},
         body: JSON.stringify({
-            item:item,
-            protein:protein_val,
+            item: item,
+            protein: protein_val,
             carbs: carb_val,
             fat: fat_val,
             fiber: fiber_val,
             cals: calorie_val,
-            serving:serving,
-            date: today.toISOString().slice(0, 10)
+            serving: serving,
+            date: current_day 
         }),
       })
       .then(response => response.json())
