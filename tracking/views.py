@@ -119,7 +119,8 @@ def index(request):
             metric.save()
         join_date = cur_user.date_joined
         today = datetime.date.today() 
-        metrics = Metrics.objects.filter(account=cur_user).filter(date__range=[join_date, today]).order_by('date')
+
+        metrics = Metrics.objects.filter(account=cur_user).filter(date__range=[join_date, yesterday]).order_by('date')
         i = 1
         dates, bodyweight_data, steps, calories = [],[],[],[]
         

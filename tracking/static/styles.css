@@ -47,3 +47,16 @@ input[type=submit] {
   background-color: DodgerBlue !important;
   color: #ffffff;
 }
+
+
+.flex-container {
+  display: flex ;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.flex-child {
+    min-width: min-content;
+    max-width: 50%;
+
+}
