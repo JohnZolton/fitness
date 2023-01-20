@@ -78,14 +78,14 @@ function displaynext(){
 
 function changedisplay(today){
     let selected_day = new Date(today - tzoffset).toISOString().slice(0,10)
-    if (new Date() == today){
+    let dummy = new Date()
+    if (new Date().toISOString().slice(0,10) == today.toISOString().slice(0,10)){
         document.getElementById('copytotoday').style.display= 'none'
+        document.getElementById('copyprevious').style.display = 'block'
     } else {
         document.getElementById('copytotoday').style.display = 'block'
+        document.getElementById('copyprevious').style.display = 'none'
     }
-    console.log(
-        document.getElementById('copytotoday')
-    )
     // delete everything but the header of table
     let table = document.getElementById('totals-table')
     table.innerHTML = `
@@ -176,12 +176,6 @@ function changedisplay(today){
         fiber_total.innerText = `Fiber: ${new_total_fiber}`
         calorie_total.innerText = `Calories: ${new_total_cals}/${calorie_goal}`
       });
-
-      if (new Date().toISOString().slice(0, 10) == today.toISOString().slice(0, 10)){
-        document.getElementById('copyprevious').style.display = 'block'
-      } else {
-        document.getElementById('copyprevious').style.display = 'none'
-      }
 }
 
 
