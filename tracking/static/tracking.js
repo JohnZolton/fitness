@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('food').addEventListener('blur', clearautocomplete)
     document.getElementById('prev').addEventListener('click', displayprevious)
     document.getElementById('next').addEventListener('click', displaynext)
-    
+    document.getElementById('copytotoday').addEventListener('click', copytotoday)
     let editbuttons = document.querySelectorAll('.edit-button')
 
     editbuttons.forEach(child => {
@@ -33,6 +33,21 @@ function clearautocomplete(){
         closeall()
     }, 200);
 }
+
+function copytotoday(){
+    let csrf = getcookie('csrftoken');
+
+    let selected_day = new Date(today - tzoffset).toISOString().slice(0,10)
+    fetch('copytotoday', {
+        method: 'POST',
+        headers:{'X-CSRFToken': csrf},
+        body: JSON.stringify({
+            date: selected_day
+        }),
+      })
+      .then(response => response.json())
+      .then(ans => { console.log(ans['response'])})}
+
 
 function displayprevious(){
     today.setTime(today.getTime() - dateOffset);
@@ -63,7 +78,14 @@ function displaynext(){
 
 function changedisplay(today){
     let selected_day = new Date(today - tzoffset).toISOString().slice(0,10)
-
+    if (new Date() == today){
+        document.getElementById('copytotoday').style.display= 'none'
+    } else {
+        document.getElementById('copytotoday').style.display = 'block'
+    }
+    console.log(
+        document.getElementById('copytotoday')
+    )
     // delete everything but the header of table
     let table = document.getElementById('totals-table')
     table.innerHTML = `

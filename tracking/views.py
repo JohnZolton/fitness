@@ -410,3 +410,15 @@ def displayprevious(request):
 
     
     return HttpResponse(json.dumps(response), content_type='application/json')
+    
+def copytotoday(request):
+    item = json.loads(request.body)
+    print(item['date'])
+    user = User.objects.get(id=request.user.id)
+    day_being_copied = Metrics.objects.get(account=user, date=item['date'])
+    day_copied_to = Metrics.objects.get(account=user, date = datetime.date.today())
+    day_copied_to.contents = day_being_copied.contents
+    print(day_copied_to.date, day_copied_to.contents)
+    day_copied_to.save()
+    response = {'response': 'based'}
+    return HttpResponse(json.dumps(response), content_type='application/json')
