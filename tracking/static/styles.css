@@ -53,12 +53,12 @@ input[type=submit] {
   display: flex ;
   flex-direction: row;
   flex-wrap: wrap;
+  align-items: center;
 }
 
 .flex-child {
-
-    width: 40%;
-    min-width: 300px;
+    width: 100%;
+    max-width: 500px;
 }
 
 table {
@@ -79,10 +79,9 @@ tr:hover {
 
 .toolbar {
   display: flex;
-  width: fit-content;
+  width: 100%;
   border: 2px solid blue;
   border-radius: 10px;
-  margin: 10px;
 }
 .toolbar-item {
   padding: 10px;

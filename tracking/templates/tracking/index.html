@@ -30,9 +30,15 @@
                 labels: {{ dates|safe }}
             },
             options: {
-                responsive: true
+                scales: {
+                yAxes: [{
+                        display: true,
+                        ticks: {
+                            
+                        }
+                }]
             }
-            };
+            }}
         var bodyweight = {
             type: 'line',
             data: {
@@ -47,7 +53,17 @@
                 labels: {{ dates|safe }}
             },
             options: {
-                responsive: true
+                responsive: true,
+                scales: {
+                    yAxes: [{
+                        display:true,
+                        ticks: {
+                            min: {{min_bodyweight}},
+                            max: {{max_bodyweight}},
+                            stepSize: {{stepsize}}
+                        }
+                    }]
+                }
             }
             };
 
@@ -78,8 +94,8 @@
             };
         
         </script>
-        <div><canvas id="steps_chart" style="width:300px;max-height: 200px;"></canvas></div>
-        <div><canvas id="bodyweight_chart" style="width:300px;;max-height: 200px"></canvas></div>
+        <div><canvas id="steps_chart" style="width:300px;max-height: 250px;"></canvas></div>
+        <div><canvas id="bodyweight_chart" style="width:300px;;max-height: 250px"></canvas></div>
         <div><canvas id="calories_chart" style="width:300px;max-height:200px"></canvas></div>
     </div>
     

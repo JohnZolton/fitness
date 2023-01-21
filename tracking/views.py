@@ -139,7 +139,9 @@ def index(request):
             else:
                 bodyweight_data.append(0)
             calories.append(day.calories)
-
+        min_bodyweight = min(bodyweight_data)-1
+        max_bodyweight = max(bodyweight_data) + 1
+        stepsize = (max_bodyweight-min_bodyweight)/6
     else:
         bodyweight = None
 
@@ -157,6 +159,9 @@ def index(request):
         'bodyweight_data': bodyweight_data,
         'calorie_data': calories,
         'dates':dates,
+        'min_bodyweight': min_bodyweight,
+        'max_bodyweight':max_bodyweight,
+        'stepsize': stepsize
         }
  
     return render(request, 'tracking/index.html', context)
