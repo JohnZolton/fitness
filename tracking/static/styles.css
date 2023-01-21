@@ -56,7 +56,40 @@ input[type=submit] {
 }
 
 .flex-child {
-    min-width: min-content;
-    max-width: 50%;
 
+    width: 40%;
+    min-width: 300px;
+}
+
+table {
+  border: 1px solid black;
+
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px;
+}
+
+tr{
+  margin: 10px;
+  padding: 10px;
+}
+tr:hover {
+  background-color: burlywood;
+}
+
+.toolbar {
+  display: flex;
+  width: fit-content;
+  border: 2px solid blue;
+  border-radius: 10px;
+  margin: 10px;
+}
+.toolbar-item {
+  padding: 10px;
+}
+
+.table-bar {
+  display: grid;
+  grid-template-columns: 100px auto auto auto auto;
+  width: auto;
 }
