@@ -75,6 +75,7 @@ def index(request):
     print(datetime.date.today()) 
     '''throwaway = Metrics.objects.get(account=request.user, date=datetime.date.today())
     throwaway.delete()'''
+    print(request.user.id)
     if request.user.id:
         cur_user = User.objects.get(id=request.user.id)
         metrics, _ = Metrics.objects.get_or_create(account=request.user, date=datetime.date.today())
@@ -123,7 +124,7 @@ def index(request):
         metrics = Metrics.objects.filter(account=cur_user).filter(date__range=[join_date, yesterday]).order_by('date')
         i = 1
         dates, bodyweight_data, steps, calories = [],[],[],[]
-        
+        print(metrics)
         for day in metrics:
             dates.append(day.date.strftime('%Y-%m-%d'))
             print(day.bodyweight)
@@ -144,6 +145,7 @@ def index(request):
         stepsize = (max_bodyweight-min_bodyweight)/6
     else:
         bodyweight = None
+        steps = bodyweight_data = calories = dates = min_bodyweight = max_bodyweight = stepsize = 0
 
     context = {
         'key': api_key,

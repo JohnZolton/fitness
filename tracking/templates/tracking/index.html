@@ -2,6 +2,7 @@
 
 <div>
     {% block body %}
+    {% if user.is_authenticated %}
     {% if not bodyweight %}
     <form action = "{% url 'bodyweight' %}" method="post">
         {% csrf_token %}
@@ -10,9 +11,9 @@
         <button type="submit">Save</button>
     </form>
     {% endif %}
+    {% endif %}
 <div class="flex-container">
     <div class="flex-child">
-        <h2>Data n stuff</h2>
         
         <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
         <script>
@@ -101,29 +102,21 @@
     
     <div class="flex-child">
 
-            <div>
-                Meal History
-            </div>
         <div class="table-bar">
-            <div class="table-date-container">
-            <div class="flex-container">
-                <button id="prev">Prev</button>
+            <div style="display:flex">
+            <div class="toolbar-item"><button id="prev">Prev</button></div>
+            <div  class="toolbar-item"id="date">{{date}}</div>
+            <div class="toolbar-item"><button  class="table-swap"id="next">Next</button></div>
             </div>
-                <div  class="table-swap"id="date">{{date}}</div>
-            <div class="table-copy">
-                <button  class="table-swap"id="next">Next</button>
+            <div>
+                <form id="copyprevious" action = "{% url 'copyprevious' %}" method="post">
+                    {% csrf_token %}
+                <button>Copy Previous Day</button>
+                
+                </form>
+                    <button hidden id="copytotoday">Copy to Today</button>
+                </form>
             </div>
-</div>
-        <div><form id="copyprevious" action = "{% url 'copyprevious' %}" method="post">
-            {% csrf_token %}
-            <button>Copy Previous Day</button>
-        </div>
-        </form>
-            <button hidden id="copytotoday">Copy to Today</button>
-
-        </form>
-
-
         </div>
         <div>
             <table id="totals-table">
@@ -160,25 +153,38 @@
                 {% endif %}
                 
             </table>
-            <div class="flex-container">
-                <div id="total-protein" data_goal = '{{user.protein_goal}}' data_current="{{protein}}">
-                Protein: {{protein}}/{{user.protein_goal}}
-            </div>
-            <div id="total-carbs" data_goal = '{{user.carb_goal}}'data_current="{{carbs}}">
-                Carbs: {{carbs}}/{{user.carb_goal}}
-            </div>
-            <div id="total-fat" data_goal = '{{user.fat_goal}}'data_current="{{fats}}">
-                Fat: {{fats}}/{{user.fat_goal}}
-            </div>
-            <div id="total-fiber" data_current="{{fiber}}">
-                Fiber: {{fiber}}
-            </div>
-            <div id="total-cals" data_goal = '{{user.calorie_goal}}'data_current="{{calories}}">
-                Calories: {{calories}}/{{user.calorie_goal}}
-            </div>
+            <div class="totals-container">
+                <div class="totals-child">
+                    <progress value="{{protein}}" max="{{user.protein_goal}}"></progress>
+                    <div class="totals-item" id="total-protein" data_goal = '{{user.protein_goal}}' data_current="{{protein}}">Protein: {{protein}}/{{user.protein_goal}}</div>
+                </div>
+                <div class="totals-child">
+                    <progress value="{{carbs}}" max="{{user.carb_goal}}"></progress>
+                    <div class="totals-item" id="total-carbs" data_goal = '{{user.carb_goal}}'data_current="{{carbs}}">
+                        Carbs: {{carbs}}/{{user.carb_goal}}
+                    </div>
+                </div>
+                <div class="totals-child">
+                    <progress value="{{fats}}" max="{{user.fat_goal}}"></progress>
+                    <div class="totals-item" id="total-fat" data_goal = '{{user.fat_goal}}'data_current="{{fats}}">
+                        Fat: {{fats}}/{{user.fat_goal}}
+                    </div>
+                </div>
+                <div class="totals-child">
+                    <progress value="{{fiber}}"></progress>
+                    <div class="totals-item" id="total-fiber" data_current="{{fiber}}">
+                    Fiber: {{fiber}}
+                    </div>
+                </div>
+                <div class="totals-child">
+                    <progress value="{{calories}}" max="{{user.calorie_goal}}"></progress>
+                    <div class="totals-item" id="total-cals" data_goal = '{{user.calorie_goal}}'data_current="{{calories}}">
+                    Calories: {{calories}}/{{user.calorie_goal}}
+                    </div>
+                </div>
         </div></div>
         
-
+<div class="totals-container">
         <h2>Add Foods</h2>
         <div id="searchbox">
             <form autocomplete="off" onSubmit='return false' action="{% url 'index' %}" method="POST" id="lookup">
@@ -189,7 +195,7 @@
                 </div>
                 <button id="submit">Search</button>
             </form>
-
+</div>
 
         <input type="hidden" id="key" value="{{key}}">
         {% load static %}
