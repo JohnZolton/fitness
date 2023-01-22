@@ -89,6 +89,9 @@
             var ctx1 = document.getElementById('steps_chart').getContext('2d');
             var ctx2 = document.getElementById('bodyweight_chart').getContext('2d');
             var ctx3 = document.getElementById('calories_chart').getContext('2d');
+
+            Chart.defaults.color = '#000';
+            Chart.defaults.backgroundColor = '#383737'
             window.myPie = new Chart(ctx1, config);
             window.myPie = new Chart(ctx2, bodyweight);
             window.myPie = new Chart(ctx3, calorie_data);
@@ -105,7 +108,7 @@
         <div class="table-bar">
             <div style="display:flex">
             <div class="toolbar-item"><button id="prev">Prev</button></div>
-            <div  class="toolbar-item"id="date">{{date}}</div>
+            <div  class="toolbar-date"id="date">{{date}}</div>
             <div class="toolbar-item"><button  class="table-swap"id="next">Next</button></div>
             </div>
             <div>
@@ -184,8 +187,8 @@
                 </div>
         </div></div>
         
-<div class="totals-container">
-        <h2>Add Foods</h2>
+<div class="add-foods-container">
+        <div class="add-header">Add Foods</div>
         <div id="searchbox">
             <form autocomplete="off" onSubmit='return false' action="{% url 'index' %}" method="POST" id="lookup">
                 {% csrf_token %}
@@ -198,6 +201,7 @@
 </div>
 
         <input type="hidden" id="key" value="{{key}}">
+<div id="display-table"></div>
         {% load static %}
     <script type = 'text/javascript' src="{% static 'tracking.js' %}"></script>
     

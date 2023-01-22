@@ -227,6 +227,7 @@ function closeall(){
 }
 
 function search(event) {
+    console.log(this.parentElement)
     hideresults(document.getElementById('display-table'))
    
     let api = document.getElementById('key').value
@@ -389,8 +390,9 @@ function addfood(){
       fiber_total.attributes.data_current.value = new_total_fiber
       calorie_total.attributes.data_current.value = new_total_cals
 
-
+    
     hideresults(document.getElementById('display-table'))
+    document.getElementById('display-table').style.display = 'none'
     document.getElementById('food').value = ''
 }
 
@@ -570,6 +572,8 @@ function removeselection(){
 }
 
 function hideresults(parent) {
+    console.log(parent)
+    console.log(this)
     while (parent.firstChild) {
         parent.removeChild(parent.firstChild)
     }

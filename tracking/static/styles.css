@@ -2,8 +2,9 @@
   --backgroundcolor: #121212;
   --textcolor: white;
   --bordercolor: gray;
-  --secondarybackground: #4b4b4b6c;
-  --highlightcolor: #4b4b4bb8;
+  --secondarybackground: #383737;
+  --highlightcolor: #4b4b4b;
+  --selectedcolor: #4b4b4b;
 }
 
 
@@ -20,17 +21,23 @@ body {
 }
 input {
   border: 1px solid transparent;
-  background-color: #f1f1f1;
+  border-radius: 10px;
   padding: 10px;
   font-size: 16px;
 }
 input[type=text] {
-  background-color: #f1f1f1;
-  width: 100%;
+  background-color: var(--highlightcolor);
+  width: 400px;
+  color: var(--textcolor);
+  margin-bottom: 10px;
 }
+input:focus{
+  background-color: var(--selectedcolor);
+  border: none;
+}
+
 input[type=submit] {
-  background-color: DodgerBlue;
-  color: #fff;
+  color: var(--textcolor);
 }
 .autocomplete-items {
   position: absolute;
@@ -46,17 +53,15 @@ input[type=submit] {
 .autocomplete-items div {
   padding: 10px;
   cursor: pointer;
-  background-color: #fff;
+  background-color: var(--secondarybackground);
   border-bottom: 1px solid #d4d4d4;
 }
 .autocomplete-items div:hover {
   /*when hovering an item:*/
-  background-color: #e9e9e9;
+  background-color: var(--selectedcolor);
 }
 .autocomplete-active {
   /*when navigating through the items using the arrow keys:*/
-  background-color: DodgerBlue !important;
-  color: #ffffff;
 }
 
 
@@ -64,7 +69,7 @@ input[type=submit] {
   display: flex ;
   flex-direction: row;
   flex-wrap: wrap;
-  align-items:center; 
+  justify-content: center;
 }
 
 .flex-child {
@@ -79,6 +84,7 @@ canvas {
   margin: 20px;
   padding:10px;
   border-radius: 10px;
+  color: var(--textcolor)
 }
 table {
   border: 1px solid black;
@@ -99,12 +105,19 @@ tr:hover {
 .toolbar {
   display: flex;
   width: 100%;
-  border: 2px solid var(--bordercolor);
   border-radius: 10px;
   border-radius: 10px;
+  background-color: var(--secondarybackground);
 }
 .toolbar-item {
   padding: 10px;
+}
+.toolbar-item:hover{
+  background-color: var(--highlightcolor);
+}
+.toolbar-date{
+  padding: 10px;
+  padding-top: 12px;
 }
 
 .table-bar {
@@ -116,6 +129,7 @@ tr:hover {
   border-radius: 10px;
   margin-left: 10px;
   align-items: center;
+  margin-top: 20px;
 }
 
 .table-swap {
@@ -145,4 +159,21 @@ tr:hover {
 }
 .totals-item {
   padding-left: 15px;
+}
+
+a{
+  color: white;
+  text-decoration: none;
+}
+.add-foods-container{
+  background-color: var(--secondarybackground);
+  width: auto;
+  margin: 10px;
+  border-radius: 10px;
+  padding-left: 10px;
+  
+}
+.add-header{
+  font-size: large;
+  padding: 5px;
 }
