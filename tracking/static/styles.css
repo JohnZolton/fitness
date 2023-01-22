@@ -1,6 +1,15 @@
+:root {
+  --backgroundcolor: rgb(46, 48, 61);
+  --textcolor: white;
+  --bordercolor: gray;
+}
+
+
 * { box-sizing: border-box; }
 body {
   font: 16px Arial;
+  background-color: var(--backgroundcolor);
+  color: var(--textcolor);
 }
 .autocomplete {
   /*the container must be positioned relative:*/
@@ -59,6 +68,7 @@ input[type=submit] {
 .flex-child {
     width: 100%;
     max-width: 500px;
+    min-width: 250px;
 }
 
 table {
@@ -80,7 +90,7 @@ tr:hover {
 .toolbar {
   display: flex;
   width: 100%;
-  border: 2px solid blue;
+  border: 2px solid var(--bordercolor);
   border-radius: 10px;
 }
 .toolbar-item {
@@ -89,6 +99,22 @@ tr:hover {
 
 .table-bar {
   display: grid;
-  grid-template-columns: 100px auto auto auto auto;
-  width: auto;
+  grid-template-columns:  auto 150px;
+  width: 100%;
+  background-color: aqua;
+  padding-left: 20px;
+
+  align-items: center;
+}
+
+.table-swap {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.table-copy {
+  justify-self: right;
+}
+.table-date-container{
+  grid-template-columns: auto auto auto;
 }

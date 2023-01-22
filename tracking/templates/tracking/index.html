@@ -101,22 +101,20 @@
     
     <div class="flex-child">
 
-        <div class="table-bar">
             <div>
                 Meal History
             </div>
+        <div class="table-bar">
+            <div class="table-date-container">
             <div class="flex-container">
-            <div>
                 <button id="prev">Prev</button>
             </div>
-                <div id="date">{{date}}</div>
-            <div>
-                <button id="next">Next</button>
+                <div  class="table-swap"id="date">{{date}}</div>
+            <div class="table-copy">
+                <button  class="table-swap"id="next">Next</button>
             </div>
-            </div>
-            <div>
-
-        <form id="copyprevious" action = "{% url 'copyprevious' %}" method="post">
+</div>
+        <div><form id="copyprevious" action = "{% url 'copyprevious' %}" method="post">
             {% csrf_token %}
             <button>Copy Previous Day</button>
         </div>
