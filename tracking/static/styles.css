@@ -4,7 +4,11 @@
   --bordercolor: gray;
   --secondarybackground: #383737;
   --highlightcolor: #4b4b4b;
-  --selectedcolor: #4b4b4b;
+  --selectedcolor: #757575;
+  --buttoncolor: rgb(7, 5, 63);
+  --buttoncolorhover: rgb(60, 46, 118);
+  --color1: rgb(172, 59, 59);
+  --color2: rgb(50, 178, 174);
 }
 
 
@@ -84,22 +88,44 @@ canvas {
   margin: 20px;
   padding:10px;
   border-radius: 10px;
-  color: var(--textcolor)
+  color: var(--textcolor);
+  max-width: 500px;
 }
 table {
   border: 1px solid black;
   background-color: var(--secondarybackground);
-  border-radius: 10px;
   padding: 10px;
   margin: 10px;
+  border-radius: 10px;
+  overflow: hidden;
+  border-collapse: collapse;
 }
-
+th{
+  padding-left: 8px;
+  padding-right: 8px
+}
 tr{
   margin: 10px;
   padding: 10px;
+  border-bottom: 1px solid black;
 }
-tr:hover {
+td{
+  padding:5px;
+  padding-left: 10px;
+}
+tbody tr:nth-child(odd) {
+  background-color: var(--secondarybackground);
+}
+
+tbody tr:nth-child(even) {
   background-color: var(--highlightcolor);
+}
+
+tbody tr:hover {
+  background-color: var(--selectedcolor);
+}
+tbody tr:nth-child(1){
+  border-radius: 10px;
 }
 
 .toolbar {
@@ -108,16 +134,20 @@ tr:hover {
   border-radius: 10px;
   border-radius: 10px;
   background-color: var(--secondarybackground);
+  overflow: hidden;
 }
 .toolbar-item {
   padding: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  width: fit-content;
 }
 .toolbar-item:hover{
-  background-color: var(--highlightcolor);
+  background-color: var(--highlightcolor)
 }
 .toolbar-date{
-  padding: 10px;
-  padding-top: 12px;
+  padding: 16px;
+  padding-top: 15px;
 }
 
 .table-bar {
@@ -133,8 +163,9 @@ tr:hover {
 }
 
 .table-swap {
-  padding-left: 0px;
-  padding-right: 0px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 10px;
 }
 
 .table-copy {
@@ -176,4 +207,18 @@ a{
 .add-header{
   font-size: large;
   padding: 5px;
+}
+
+button {
+  padding: 5px;
+  color: var(--textcolor);
+  background: var(--buttoncolor);
+  border-radius: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
+  border-color: black;
+}
+button:hover{
+  cursor:pointer;
+  background-color: var(--buttoncolorhover);
 }

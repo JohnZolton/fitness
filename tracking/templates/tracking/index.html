@@ -35,11 +35,28 @@
                 yAxes: [{
                         display: true,
                         ticks: {
-                            
+                            fontColor: '#ffffff'
+                        }
+                }],
+                xAxes: [{
+
+                        display: true,
+                        ticks: {
+                            fontColor: '#ffffff'
                         }
                 }]
-            }
-            }}
+            },
+            
+                    title: {
+                        display: true,
+                        text: 'Steps',
+                        fontColor: '#ffffff',
+                        fontSize: 20, 
+                    },
+                    legend: {
+                        display: false
+                    }
+        }}
         var bodyweight = {
             type: 'line',
             data: {
@@ -47,7 +64,7 @@
                     {
                         data: {{ bodyweight_data|safe }},
                         label: 'Bodyweight',
-                        backgroundColor: 'rgba(175, 178, 60, 0.5)'
+                        backgroundColor: 'rgb(50, 178, 174)' 
                 },
                 
             ],
@@ -61,10 +78,29 @@
                         ticks: {
                             min: {{min_bodyweight}},
                             max: {{max_bodyweight}},
-                            stepSize: {{stepsize}}
+                            stepSize: {{stepsize}},
+                            fontColor: '#ffffff'
                         }
-                    }]
-                }
+                    }],
+
+                xAxes: [{
+
+                        display: true,
+                        ticks: {
+                            fontColor: '#ffffff'
+                        }
+                }]
+                },
+                    title: {
+                        display: true,
+                        text: 'Bodyweight',
+                        fontColor: '#ffffff',
+                        fontSize: 20, 
+                    },
+                    legend: {
+                        display: false
+                    }
+                
             }
             };
 
@@ -75,14 +111,42 @@
                     {
                         data: {{ calorie_data|safe }},
                         label: 'Calories',
-                        backgroundColor: 'rgba(50,100,250, 0.5)'
+                        backgroundColor: 'rgb(172,59,59)'
                 },
                 
             ],
                 labels: {{ dates|safe }}
             },
             options: {
-                responsive: true
+
+                scales: {
+                    yAxes: [{
+                        display:true,
+                        ticks: {
+                            fontColor: '#ffffff'
+                        }
+                    }],
+
+                xAxes: [{
+
+                        display: true,
+                        ticks: {
+                            fontColor: '#ffffff'
+                        }
+                }]
+                },
+                responsive: true,
+                title: 'Calories',
+
+                    title: {
+                        display: true,
+                        text: 'Calories',
+                        fontColor: '#ffffff',
+                        fontSize: 20, 
+                    },
+                    legend: {
+                        display: false
+                    }
             }
             };
             window.onload = function() {
@@ -107,9 +171,9 @@
 
         <div class="table-bar">
             <div style="display:flex">
-            <div class="toolbar-item"><button id="prev">Prev</button></div>
+            <div class="table-swap"><button id="prev">Prev</button></div>
             <div  class="toolbar-date"id="date">{{date}}</div>
-            <div class="toolbar-item"><button  class="table-swap"id="next">Next</button></div>
+            <div class="table-swap"><button  class=""id="next">Next</button></div>
             </div>
             <div>
                 <form id="copyprevious" action = "{% url 'copyprevious' %}" method="post">
@@ -132,6 +196,8 @@
                     <th>Fiber</th>
                     <th>Calories</th>
                     <th>Serving (g)</th>
+                    <th></th>
+                    <th></th>
                 </tr>
                 {% if meals %}
                 {% for meal in meals %}
