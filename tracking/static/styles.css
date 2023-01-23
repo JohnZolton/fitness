@@ -1,6 +1,22 @@
+:root {
+  --backgroundcolor: #121212;
+  --textcolor: white;
+  --bordercolor: gray;
+  --secondarybackground: #383737;
+  --highlightcolor: #4b4b4b;
+  --selectedcolor: #757575;
+  --buttoncolor: rgb(7, 5, 63);
+  --buttoncolorhover: rgb(60, 46, 118);
+  --color1: rgb(172, 59, 59);
+  --color2: rgb(50, 178, 174);
+}
+
+
 * { box-sizing: border-box; }
 body {
   font: 16px Arial;
+  background-color: var(--backgroundcolor);
+  color: var(--textcolor);
 }
 .autocomplete {
   /*the container must be positioned relative:*/
@@ -9,17 +25,26 @@ body {
 }
 input {
   border: 1px solid transparent;
-  background-color: #f1f1f1;
+  border-radius: 10px;
   padding: 10px;
   font-size: 16px;
+  margin: 5px;
+  background-color: var(--secondarybackground);
+  color: var(--textcolor);
 }
 input[type=text] {
-  background-color: #f1f1f1;
-  width: 100%;
+  background-color: var(--highlightcolor);
+  width: 400px;
+  color: var(--textcolor);
+  margin-bottom: 10px;
 }
+input:focus{
+  background-color: var(--selectedcolor);
+  border: none;
+}
+
 input[type=submit] {
-  background-color: DodgerBlue;
-  color: #fff;
+  color: var(--textcolor);
 }
 .autocomplete-items {
   position: absolute;
@@ -35,15 +60,171 @@ input[type=submit] {
 .autocomplete-items div {
   padding: 10px;
   cursor: pointer;
-  background-color: #fff;
+  background-color: var(--secondarybackground);
   border-bottom: 1px solid #d4d4d4;
 }
 .autocomplete-items div:hover {
   /*when hovering an item:*/
-  background-color: #e9e9e9;
+  background-color: var(--selectedcolor);
 }
 .autocomplete-active {
   /*when navigating through the items using the arrow keys:*/
-  background-color: DodgerBlue !important;
-  color: #ffffff;
 }
+
+
+.flex-container {
+  display: flex ;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.flex-child {
+    width: 100%;
+    max-width: 500px;
+    min-width: 250px;
+    margin: 10px; 
+}
+
+canvas {
+  background: var(--secondarybackground);
+  margin: 20px;
+  padding:10px;
+  border-radius: 10px;
+  color: var(--textcolor);
+  max-width: 500px;
+}
+table {
+  background-color: var(--secondarybackground);
+  padding: 10px;
+  margin: 10px;
+  border-radius: 10px;
+  overflow: hidden;
+  border-collapse: collapse;
+}
+th{
+  padding-left: 8px;
+  padding-right: 8px
+}
+tr{
+  margin: 10px;
+  padding: 10px;
+  border-bottom: 1px solid black;
+  margin-right: 20px;
+}
+td{
+  padding:5px;
+  padding-left: 10px;
+}
+tbody tr:nth-child(odd) {
+  background-color: var(--secondarybackground);
+}
+
+tbody tr:nth-child(even) {
+  background-color: var(--highlightcolor);
+}
+
+tbody tr:hover {
+  background-color: var(--selectedcolor);
+}
+tbody tr:nth-child(1){
+  border-radius: 10px;
+}
+
+.toolbar {
+  display: flex;
+  width: 100%;
+  border-radius: 10px;
+  border-radius: 10px;
+  background-color: var(--secondarybackground);
+  overflow: hidden;
+}
+.toolbar-item {
+  padding: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  width: fit-content;
+}
+.toolbar-item:hover{
+  background-color: var(--highlightcolor)
+}
+.toolbar-date{
+  padding: 16px;
+  padding-top: 18px;
+}
+
+.table-bar {
+  display: grid;
+  grid-template-columns:  auto 150px;
+  width: 100%;
+  background-color: var(--secondarybackground);
+  padding-left: 20px;
+  border-radius: 10px;
+  margin-left: 10px;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.table-swap {
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 10px;
+}
+
+.table-copy {
+  justify-self: right;
+}
+.table-date-container{
+  grid-template-columns: auto auto auto;
+}
+
+.totals-container{
+  background-color: var(--secondarybackground);
+  border-radius: 10px;
+  margin:10px;
+  width: fit-content;
+}
+
+.totals-child {
+  display: flex;
+  padding:5px;
+  padding-left:15px;
+  padding-right:15px;
+}
+.totals-item {
+  padding-left: 15px;
+}
+
+a{
+  color: var(--textcolor);
+  text-decoration: none;
+}
+.add-foods-container{
+  background-color: var(--secondarybackground);
+  width: fit-content;
+  margin: 10px;
+  border-radius: 10px;
+  padding-left: 10px;
+  
+}
+.add-header{
+  font-size: large;
+  padding: 5px;
+}
+
+button {
+  padding: 5px;
+  color: var(--textcolor);
+  background: var(--buttoncolor);
+  border-radius: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
+  border-color: black;
+  margin: 4px;
+  margin-bottom: 5px;
+}
+button:hover{
+  cursor:pointer;
+  background-color: var(--buttoncolorhover);
+}
+

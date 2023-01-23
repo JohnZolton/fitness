@@ -2,6 +2,7 @@
 
 <div>
     {% block body %}
+    {% if user.is_authenticated %}
     {% if not bodyweight %}
     <form action = "{% url 'bodyweight' %}" method="post">
         {% csrf_token %}
@@ -9,93 +10,268 @@
         <input type="number" step=".1" name="weight">
         <button type="submit">Save</button>
     </form>
-    {% else %}
-    <div>Body weight: {{bodyweight}}</div>
     {% endif %}
-
-    <h2>Meal History</h2>
-    <div>
-        <button id="prev">Prev</button>
-    </div>
-        <div id="date">{{date}}</div>
-    <div>
-        <button id="next">Next</button>
-    </div>
-    <form id="copyprevious" action = "{% url 'copyprevious' %}" method="post">
-        {% csrf_token %}
-        <button>Copy Previous Day</button>
-    </form>
-    
-    <div>
-        <table id="totals-table">
-            
-            <tr id="header">
-                <th>Item</th>
-                <th>Protein</th>
-                <th>Carb</th>
-                <th>Fat</th>
-                <th>Fiber</th>
-                <th>Calories</th>
-                <th>Serving (g)</th>
-            </tr>
-            {% if meals %}
-            {% for meal in meals %}
-            <tr>
-                <td class="saved-meal" id="{{meal.0}}-name" data_original="{{meal.0}}">{{meal.0}}</td>
-                <td class="saved-meal" id="{{meal.0}}-protein" data_original="{{meal.1}}">{{meal.1}}</td>
-                <td class="saved-meal" id="{{meal.0}}-carbs" data_original="{{meal.2}}">{{meal.2}}</td>
-                <td class="saved-meal" id="{{meal.0}}-fats" data_original="{{meal.3}}">{{meal.3}}</td>
-                <td class="saved-meal" id="{{meal.0}}-fiber" data_original="{{meal.4}}">{{meal.4}}</td>
-                <td class="saved-meal" id="{{meal.0}}-calories" data_original="{{meal.5}}">{{meal.5}}</td>
-                <td class="saved-meal" id="{{meal.0}}-quantity" data_original="{{meal.6}}">{{meal.6}}</td>
+    {% endif %}
+<div class="flex-container">
+    <div class="flex-child">
+        
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+        <script>
+            var config = {
+            type: 'line',
+            data: {
+                datasets: [
+                    {
+                        data: {{ steps_data|safe }},
+                        label: 'Steps',
+                        backgroundColor: 'rgba(250,250,50, 0.5)'
+                },
                 
-                <td>
-                    <button id="{{meal.0}}-edit" class="edit-button" value="{{meal.0}}">edit</button>
-                    <button id="{{meal.0}}-save" class="save-button" value="{{meal.0}}" hidden>save</button>
-                </td>
-                <td>
-                   <button id="{{meal.0}}-remove" class="remove-button" value="{{meal.0}}" >remove</button>
-                </td>
-            </tr>
-            {% endfor %}
-            {% endif %}
+            ],
+                labels: {{ dates|safe }}
+            },
+            options: {
+                scales: {
+                yAxes: [{
+                        display: true,
+                        ticks: {
+                            fontColor: '#ffffff'
+                        }
+                }],
+                xAxes: [{
+
+                        display: true,
+                        ticks: {
+                            fontColor: '#ffffff'
+                        }
+                }]
+            },
             
-        </table>
-        <div id="total-protein" data_goal = '{{user.protein_goal}}' data_current="{{protein}}">
-            Protein: {{protein}}/{{user.protein_goal}}
-        </div>
-        <div id="total-carbs" data_goal = '{{user.carb_goal}}'data_current="{{carbs}}">
-            Carbs: {{carbs}}/{{user.carb_goal}}
-        </div>
-        <div id="total-fat" data_goal = '{{user.fat_goal}}'data_current="{{fats}}">
-            Fat: {{fats}}/{{user.fat_goal}}
-        </div>
-        <div id="total-fiber" data_current="{{fiber}}">
-            Fiber: {{fiber}}
-        </div>
-        <div id="total-cals" data_goal = '{{user.calorie_goal}}'data_current="{{calories}}">
-            Calories: {{calories}}/{{user.calorie_goal}}
-        </div>
+                    title: {
+                        display: true,
+                        text: 'Steps',
+                        fontColor: '#ffffff',
+                        fontSize: 20, 
+                    },
+                    legend: {
+                        display: false
+                    }
+        }}
+        var bodyweight = {
+            type: 'line',
+            data: {
+                datasets: [
+                    {
+                        data: {{ bodyweight_data|safe }},
+                        label: 'Bodyweight',
+                        backgroundColor: 'rgb(50, 178, 174)' 
+                },
+                
+            ],
+                labels: {{ dates|safe }}
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    yAxes: [{
+                        display:true,
+                        ticks: {
+                            min: {{min_bodyweight}},
+                            max: {{max_bodyweight}},
+                            stepSize: {{stepsize}},
+                            fontColor: '#ffffff'
+                        }
+                    }],
+
+                xAxes: [{
+
+                        display: true,
+                        ticks: {
+                            fontColor: '#ffffff'
+                        }
+                }]
+                },
+                    title: {
+                        display: true,
+                        text: 'Bodyweight',
+                        fontColor: '#ffffff',
+                        fontSize: 20, 
+                    },
+                    legend: {
+                        display: false
+                    }
+                
+            }
+            };
+
+            var calorie_data = {
+            type: 'line',
+            data: {
+                datasets: [
+                    {
+                        data: {{ calorie_data|safe }},
+                        label: 'Calories',
+                        backgroundColor: 'rgb(172,59,59)'
+                },
+                
+            ],
+                labels: {{ dates|safe }}
+            },
+            options: {
+
+                scales: {
+                    yAxes: [{
+                        display:true,
+                        ticks: {
+                            fontColor: '#ffffff'
+                        }
+                    }],
+
+                xAxes: [{
+
+                        display: true,
+                        ticks: {
+                            fontColor: '#ffffff'
+                        }
+                }]
+                },
+                responsive: true,
+                title: 'Calories',
+
+                    title: {
+                        display: true,
+                        text: 'Calories',
+                        fontColor: '#ffffff',
+                        fontSize: 20, 
+                    },
+                    legend: {
+                        display: false
+                    }
+            }
+            };
+            window.onload = function() {
+            var ctx1 = document.getElementById('steps_chart').getContext('2d');
+            var ctx2 = document.getElementById('bodyweight_chart').getContext('2d');
+            var ctx3 = document.getElementById('calories_chart').getContext('2d');
+
+            Chart.defaults.color = '#000';
+            Chart.defaults.backgroundColor = '#383737'
+            window.myPie = new Chart(ctx1, config);
+            window.myPie = new Chart(ctx2, bodyweight);
+            window.myPie = new Chart(ctx3, calorie_data);
+            };
+        
+        </script>
+        <div><canvas id="steps_chart" style="width:300px;max-height: 250px;"></canvas></div>
+        <div><canvas id="bodyweight_chart" style="width:300px;;max-height: 250px"></canvas></div>
+        <div><canvas id="calories_chart" style="width:300px;max-height:200px"></canvas></div>
     </div>
     
+    <div class="flex-child">
 
-    <h2>Add Foods</h2>
-    <div id="searchbox">
-        <form autocomplete="off" onSubmit='return false' action="{% url 'index' %}" method="POST" id="lookup">
-            {% csrf_token %}
-            <div class="autocomplete">
-                <input type="text" name="food" id="food" placeholder="Food">
-                <input type="hidden" value="lookup" name="formtype" >
+        <div class="table-bar">
+            <div style="display:flex">
+            <div class="table-swap"><button id="prev">Prev</button></div>
+            <div  class="toolbar-date"id="date">{{date}}</div>
+            <div class="table-swap"><button  class=""id="next">Next</button></div>
             </div>
-            <button id="submit">Search</button>
-        </form>
+            <div>
+                <form id="copyprevious" action = "{% url 'copyprevious' %}" method="post">
+                    {% csrf_token %}
+                <button>Copy Previous Day</button>
+                
+                </form>
+                    <button hidden id="copytotoday">Copy to Today</button>
+                </form>
+            </div>
+        </div>
+        <div>
+            <table id="totals-table">
+            
+                <tr id="header">
+                    <th>Item</th>
+                    <th>Protein</th>
+                    <th>Carb</th>
+                    <th>Fat</th>
+                    <th>Fiber</th>
+                    <th>Calories</th>
+                    <th>Serving (g)</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                {% if meals %}
+                {% for meal in meals %}
+                <tr>
+                    <td class="saved-meal" id="{{meal.0}}-name" data_original="{{meal.0}}">{{meal.0}}</td>
+                    <td class="saved-meal" id="{{meal.0}}-protein" data_original="{{meal.1}}">{{meal.1}}</td>
+                    <td class="saved-meal" id="{{meal.0}}-carbs" data_original="{{meal.2}}">{{meal.2}}</td>
+                    <td class="saved-meal" id="{{meal.0}}-fats" data_original="{{meal.3}}">{{meal.3}}</td>
+                    <td class="saved-meal" id="{{meal.0}}-fiber" data_original="{{meal.4}}">{{meal.4}}</td>
+                    <td class="saved-meal" id="{{meal.0}}-calories" data_original="{{meal.5}}">{{meal.5}}</td>
+                    <td class="saved-meal" id="{{meal.0}}-quantity" data_original="{{meal.6}}">{{meal.6}}</td>
+                    
+                    <td>
+                        <button id="{{meal.0}}-edit" class="edit-button" value="{{meal.0}}">edit</button>
+                        <button id="{{meal.0}}-save" class="save-button" value="{{meal.0}}" hidden>save</button>
+                    </td>
+                    <td>
+                    <button id="{{meal.0}}-remove" class="remove-button" value="{{meal.0}}" >remove</button>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+                
+            </table>
+            <div class="totals-container">
+                <div class="totals-child">
+                    <progress id='protein-progress' value="{{protein}}" max="{{user.protein_goal}}"></progress>
+                    <div class="totals-item" id="total-protein" data_goal = '{{user.protein_goal}}' data_current="{{protein}}">Protein: {{protein}}/{{user.protein_goal}}</div>
+                </div>
+                <div class="totals-child">
+                    <progress id='carb-progress' value="{{carbs}}" max="{{user.carb_goal}}"></progress>
+                    <div class="totals-item" id="total-carbs" data_goal = '{{user.carb_goal}}'data_current="{{carbs}}">
+                        Carbs: {{carbs}}/{{user.carb_goal}}
+                    </div>
+                </div>
+                <div class="totals-child">
+                    <progress id='fat-progress' value="{{fats}}" max="{{user.fat_goal}}"></progress>
+                    <div class="totals-item" id="total-fat" data_goal = '{{user.fat_goal}}'data_current="{{fats}}">
+                        Fat: {{fats}}/{{user.fat_goal}}
+                    </div>
+                </div>
+                <div class="totals-child">
+                    <progress id='fiber-progress' value="{{fiber}}" max="{{user.fiber_goal}}"></progress>
+                    <div class="totals-item" id="total-fiber" data_current="{{fiber}}" data_goal = '{{user.fiber_goal}}'>
+                    Fiber: {{fiber}}/{{user.fiber_goal}}
+                    </div>
+                </div>
+                <div class="totals-child">
+                    <progress id='calorie-progress' value="{{calories}}" max="{{user.calorie_goal}}"></progress>
+                    <div class="totals-item" id="total-cals" data_goal = '{{user.calorie_goal}}'data_current="{{calories}}">
+                    Calories: {{calories}}/{{user.calorie_goal}}
+                    </div>
+                </div>
+        </div></div>
+        
+<div class="add-foods-container">
+        <div class="add-header">Add Foods</div>
+        <div id="searchbox">
+            <form autocomplete="off" onSubmit='return false' action="{% url 'index' %}" method="POST" id="lookup">
+                {% csrf_token %}
+                <div class="autocomplete">
+                    <input type="text" name="food" id="food" placeholder="Food">
+                    <input type="hidden" value="lookup" name="formtype" >
+                </div>
+                <button class="searchbutton" id="submit">Search</button>
+            </form>
+</div>
+
+        <input type="hidden" id="key" value="{{key}}">
+<div id="display-table"></div>
+        {% load static %}
+    <script type = 'text/javascript' src="{% static 'tracking.js' %}"></script>
+    
+        {% endblock %}
     </div>
-    <div>
-        <table id="display-table">
-        </table>
-    </div>
-    <input type="hidden" id="key" value="{{key}}">
-    {% load static %}
-<script type = 'text/javascript' src="{% static 'tracking.js' %}"></script>
-    {% endblock %}
+</div>
 </div>

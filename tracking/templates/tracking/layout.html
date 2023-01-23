@@ -11,30 +11,32 @@
     </head>
     <body>
         <h1>Fitness Tracking</h1>
-        <div>
-            <li>
-                <a href="{% url 'index' %}">Home</a>
-            </li>
-            {% if user.is_authenticated %}
-            <li>
-                <a href="{% url 'viewdata' %}">View Data</a>
-            </li>
-            <li>
-                <a href="{% url 'settings' %}">Settings</a>
-            </li>
-            <li>
-                <a href="{% url 'logout' %}">Logout</a>
-            </li>
-            {% else %}
-            <li>
-                <a href="{% url 'login' %}">Login</a>
-            </li>
+        <div class="flex-container">
+        <div class="toolbar">
+            <div class="toolbar-item">
 
-            <li>
+                <a href="{% url 'index' %}">Home</a>
+            </div>
+            {% if user.is_authenticated %}
+            <div class="toolbar-item">
+                <a href="{% url 'viewdata' %}">View Data</a>
+            </div>
+            <div class="toolbar-item">
+                <a href="{% url 'settings' %}">Settings</a>
+            </div>
+            <div class="toolbar-item">
+                <a href="{% url 'logout' %}">Logout</a>
+            </div>
+            {% else %}
+            <div class="toolbar-item">
+                <a href="{% url 'login' %}">Login</a>
+            </div>
+
+            <div class="toolbar-item">
                 <a href="{% url 'register' %}">Register</a>
-            </li>
+            </div>
             {% endif %}
-        </div>
+        </div></div>
             {% block body %}
             {% endblock %}
     </body>

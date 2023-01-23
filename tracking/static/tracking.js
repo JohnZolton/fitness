@@ -3,6 +3,7 @@ const target = document.getElementById('food')
 let today = new Date()
 let dateOffset = 24*60*60*1000 // 1 day
 
+var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
 
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('lookup').addEventListener("submit", search);
@@ -10,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('food').addEventListener('blur', clearautocomplete)
     document.getElementById('prev').addEventListener('click', displayprevious)
     document.getElementById('next').addEventListener('click', displaynext)
-    
+    document.getElementById('copytotoday').addEventListener('click', copytotoday)
     let editbuttons = document.querySelectorAll('.edit-button')
 
     editbuttons.forEach(child => {
@@ -33,19 +34,41 @@ function clearautocomplete(){
     }, 200);
 }
 
+function copytotoday(){
+    let csrf = getcookie('csrftoken');
+
+    let selected_day = new Date(today - tzoffset).toISOString().slice(0,10)
+    fetch('copytotoday', {
+        method: 'POST',
+        headers:{'X-CSRFToken': csrf},
+        body: JSON.stringify({
+            date: selected_day
+        }),
+      })
+      .then(response => response.json())
+      .then(ans => { console.log(ans['response'])})}
+
+
 function displayprevious(){
     today.setTime(today.getTime() - dateOffset);
+    console.log(today)
     changedisplay(today)
     document.getElementById('date').innerText = today.toLocaleDateString('en-US', {
         day : 'numeric',
         month : 'short',
         year : 'numeric'
     });
+
 }
 
 function displaynext(){
+    console.log('first: ' + today.toLocaleDateString('en-US', {
+        day:'numeric', month: 'short', year:'numeric'
+    }))
     today.setTime(today.getTime() + dateOffset);
+    console.log('second: ' + today)
     changedisplay(today)
+
     document.getElementById('date').innerText = today.toLocaleDateString('en-US', {
         day : 'numeric',
         month : 'short',
@@ -54,6 +77,15 @@ function displaynext(){
 }
 
 function changedisplay(today){
+    let selected_day = new Date(today - tzoffset).toISOString().slice(0,10)
+    let dummy = new Date()
+    if (new Date().toISOString().slice(0,10) == today.toISOString().slice(0,10)){
+        document.getElementById('copytotoday').style.display= 'none'
+        document.getElementById('copyprevious').style.display = 'block'
+    } else {
+        document.getElementById('copytotoday').style.display = 'block'
+        document.getElementById('copyprevious').style.display = 'none'
+    }
     // delete everything but the header of table
     let table = document.getElementById('totals-table')
     table.innerHTML = `
@@ -66,12 +98,13 @@ function changedisplay(today){
         <th>Calories</th>
         <th>Serving (g)</th>
     </tr>`
+    
     let csrf = getcookie('csrftoken');
     fetch('displayprevious', {
         method: 'POST',
         headers:{'X-CSRFToken': csrf},
         body: JSON.stringify({
-            date: today.toISOString().slice(0, 10)
+            date: selected_day
         }),
       })
       .then(response => response.json())
@@ -130,7 +163,8 @@ function changedisplay(today){
         let carb_goal = carb_total.attributes.data_goal.value
         let fat_goal = fat_total.attributes.data_goal.value
         let calorie_goal = calorie_total.attributes.data_goal.value
-        
+        let fiber_goal = fiber_total.attributes.data_goal.value
+
         new_total_protein = ans['total_protein']
         new_total_carb = ans['total_carb']
         new_total_fat= ans['total_fat']
@@ -140,15 +174,15 @@ function changedisplay(today){
         protein_total.innerText = `Protein: ${new_total_protein}/${protein_goal}`
         carb_total.innerText = `Carbs: ${new_total_carb}/${carb_goal}`
         fat_total.innerText = `Fat: ${new_total_fat}/${fat_goal}`
-        fiber_total.innerText = `Fiber: ${new_total_fiber}`
+        fiber_total.innerText = `Fiber: ${new_total_fiber}/${fiber_goal}`
         calorie_total.innerText = `Calories: ${new_total_cals}/${calorie_goal}`
-      });
 
-      if (new Date().toISOString().slice(0, 10) == today.toISOString().slice(0, 10)){
-        document.getElementById('copyprevious').style.display = 'block'
-      } else {
-        document.getElementById('copyprevious').style.display = 'none'
-      }
+        document.getElementById('protein-progress').attributes.value.value = new_total_protein
+        document.getElementById('carb-progress').attributes.value.value = new_total_carb
+        document.getElementById('fat-progress').attributes.value.value = new_total_fat
+        document.getElementById('fiber-progress').attributes.value.value = new_total_fiber
+        document.getElementById('calorie-progress').attributes.value.value = new_total_cals
+      });
 }
 
 
@@ -200,6 +234,7 @@ function closeall(){
 }
 
 function search(event) {
+    console.log(this.parentElement)
     hideresults(document.getElementById('display-table'))
    
     let api = document.getElementById('key').value
@@ -264,6 +299,9 @@ function addfood(){
     let fats = info[2].innerHTML
     let cals = info[5].innerHTML
     let fiber = info[4].innerHTML
+
+    
+    let current_day = new Date(today - tzoffset).toISOString().slice(0, 10)
     
     let portion_factor = serving / 100
     let = protein_val = Math.round(protein*portion_factor)
@@ -283,7 +321,7 @@ function addfood(){
             fiber: fiber_val,
             cals: calorie_val,
             serving:serving,
-            date: today.toISOString().slice(0, 10)
+            date: current_day 
         }),
       })
       .then(response => response.json())
@@ -359,8 +397,14 @@ function addfood(){
       fiber_total.attributes.data_current.value = new_total_fiber
       calorie_total.attributes.data_current.value = new_total_cals
 
-
+        document.getElementById('protein-progress').attributes.value.value = new_total_protein
+        document.getElementById('carb-progress').attributes.value.value = new_total_carb
+        document.getElementById('fat-progress').attributes.value.value = new_total_fat
+        document.getElementById('fiber-progress').attributes.value.value = new_total_fiber
+        document.getElementById('calorie-progress').attributes.value.value = new_total_cals
+    
     hideresults(document.getElementById('display-table'))
+    document.getElementById('display-table').style.display = 'none'
     document.getElementById('food').value = ''
 }
 
@@ -451,6 +495,7 @@ function savechanges() {
     let carb_goal = carb_total.attributes.data_goal.value
     let fat_goal = fat_total.attributes.data_goal.value
     let calorie_goal = calorie_total.attributes.data_goal.value
+    let fiber_goal = fiber_total.attributes.data_goal.value
 
     let protein_current = protein_total.attributes.data_current.value
     let carb_current = carb_total.attributes.data_current.value
@@ -464,10 +509,11 @@ function savechanges() {
     let new_total_fiber = parseInt(fiber_current) + parseInt(new_fiber) - parseInt(old_fiber)
     let new_total_cals = parseInt(calorie_current) + parseInt(new_cals) - parseInt(old_cals)
 
+    let current_day = new Date(today -tzoffset).toISOString().slice(0,10)
     protein_total.innerText = `Protein: ${new_total_protein}/${protein_goal}`
     carb_total.innerText = `Carbs: ${new_total_carb}/${carb_goal}`
     fat_total.innerText = `Fat: ${new_total_fat}/${fat_goal}`
-    fiber_total.innerText = `Fiber: ${new_total_fiber}`
+    fiber_total.innerText = `Fiber: ${new_total_fiber}/${fiber_goal}`
     calorie_total.innerText = `Calories: ${new_total_cals}/${calorie_goal}`
 
     protein_total.attributes.data_current.value = new_total_protein
@@ -475,6 +521,12 @@ function savechanges() {
     fat_total.attributes.data_current.value = new_total_fat
     fiber_total.attributes.data_current.value = new_total_fiber
     calorie_total.attributes.data_current.value = new_total_cals
+
+        document.getElementById('protein-progress').attributes.value.value = new_total_protein
+        document.getElementById('carb-progress').attributes.value.value = new_total_carb
+        document.getElementById('fat-progress').attributes.value.value = new_total_fat
+        document.getElementById('fiber-progress').attributes.value.value = new_total_fiber
+        document.getElementById('calorie-progress').attributes.value.value = new_total_cals
     let csrf = getcookie('csrftoken');
     fetch('editfoods', {
         method: 'POST',
@@ -493,7 +545,7 @@ function savechanges() {
             old_fiber: old_fiber,
             old_cals: old_cals,
             old_serving: old_serving,
-            date: today.toISOString().slice(0, 10)
+            date: current_day
         }),
       })
       .then(response => response.json())
@@ -539,6 +591,8 @@ function removeselection(){
 }
 
 function hideresults(parent) {
+    console.log(parent)
+    console.log(this)
     while (parent.firstChild) {
         parent.removeChild(parent.firstChild)
     }
@@ -558,6 +612,7 @@ function hideresults(parent) {
 function removeitem(){
     let id = this.attributes.value.value
 
+    let current_day = new Date(today -tzoffset).toISOString().slice(0,10)
     let item = document.getElementById(`${id}-name`).innerText
     let serving = document.getElementById(`${id}-quantity`).innerText
     let = protein_val = document.getElementById(`${id}-protein`).innerText
@@ -570,14 +625,14 @@ function removeitem(){
         method: 'POST',
         headers:{'X-CSRFToken': csrf},
         body: JSON.stringify({
-            item:item,
-            protein:protein_val,
+            item: item,
+            protein: protein_val,
             carbs: carb_val,
             fat: fat_val,
             fiber: fiber_val,
             cals: calorie_val,
-            serving:serving,
-            date: today.toISOString().slice(0, 10)
+            serving: serving,
+            date: current_day 
         }),
       })
       .then(response => response.json())
@@ -600,6 +655,7 @@ function removeitem(){
       let carb_goal = carb_total.attributes.data_goal.value
       let fat_goal = fat_total.attributes.data_goal.value
       let calorie_goal = calorie_total.attributes.data_goal.value
+      let fiber_goal = fiber_total.attributes.data_goal.value
 
       let new_total_protein = parseInt(protein_current) - parseInt(protein_val)
       let new_total_carb = parseInt(carb_current) - parseInt(carb_val)
@@ -610,7 +666,7 @@ function removeitem(){
       protein_total.innerText = `Protein: ${new_total_protein}/${protein_goal}`
       carb_total.innerText = `Carbs: ${new_total_carb}/${carb_goal}`
       fat_total.innerText = `Fat: ${new_total_fat}/${fat_goal}`
-      fiber_total.innerText = `Fiber: ${new_total_fiber}`
+      fiber_total.innerText = `Fiber: ${new_total_fiber}/${fiber_goal}`
       calorie_total.innerText = `Calories: ${new_total_cals}/${calorie_goal}`
   
       protein_total.attributes.data_current.value = new_total_protein
@@ -618,6 +674,12 @@ function removeitem(){
       fat_total.attributes.data_current.value = new_total_fat
       fiber_total.attributes.data_current.value = new_total_fiber
       calorie_total.attributes.data_current.value = new_total_cals
+
+        document.getElementById('protein-progress').attributes.value.value = new_total_protein
+        document.getElementById('carb-progress').attributes.value.value = new_total_carb
+        document.getElementById('fat-progress').attributes.value.value = new_total_fat
+        document.getElementById('fiber-progress').attributes.value.value = new_total_fiber
+        document.getElementById('calorie-progress').attributes.value.value = new_total_cals
 }
 
 

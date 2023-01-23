@@ -12,6 +12,7 @@ import keys
 import time
 
 
+
 from garminconnect import (
     Garmin,
     GarminConnectAuthenticationError,
@@ -71,15 +72,19 @@ def register(request):
 def index(request):
     res = []
     totals = [0,0,0,0,0]
+    print(datetime.date.today()) 
     '''throwaway = Metrics.objects.get(account=request.user, date=datetime.date.today())
     throwaway.delete()'''
+    print(request.user.id)
     if request.user.id:
         cur_user = User.objects.get(id=request.user.id)
         metrics, _ = Metrics.objects.get_or_create(account=request.user, date=datetime.date.today())
-
+        
+        yesterday = datetime.date.today() - datetime.timedelta(days=1)
+        print('yesterday: ', yesterday)
+        yesterday_metric, created = Metrics.objects.get_or_create(account=request.user, date=yesterday)
+        
         if cur_user.auto_copy_previous and not metrics.edited:
-            yesterday = datetime.date.today() - datetime.timedelta(days=1)
-            yesterday_metric, created = Metrics.objects.get_or_create(account=request.user, date=yesterday)
             metrics.contents = yesterday_metric.contents
             metrics.save()
             
@@ -94,12 +99,10 @@ def index(request):
         bodyweight = metrics.bodyweight
         metrics.calories = totals[4]
         metrics.save()
-        if cur_user.auto_update_steps and not cur_user.yesterday_synced:   
+        if cur_user.auto_update_steps and not yesterday_metric.steps:
             email = keys.garmin_email
             password = keys.garmin_pass
-            today = datetime.date.today()
 
-            yesterday = today - datetime.timedelta(days=1)
             api = Garmin(email, password)
             api.login()
             fields = ['calendarDate','totalSteps']
@@ -115,12 +118,34 @@ def index(request):
             metric.steps = concise_data[1]
 
             metric.save()
-            cur_user.yesterday_synced = True
-            cur_user.save()
+        join_date = cur_user.date_joined
+        today = datetime.date.today() 
 
-
+        metrics = Metrics.objects.filter(account=cur_user).filter(date__range=[join_date, yesterday]).order_by('date')
+        i = 1
+        dates, bodyweight_data, steps, calories = [],[],[],[]
+        print(metrics)
+        for day in metrics:
+            dates.append(day.date.strftime('%Y-%m-%d'))
+            print(day.bodyweight)
+            print(day.steps)
+            print(day.calories) 
+            
+            if day.steps:
+                steps.append(day.steps)
+            else:
+                steps.append(0)
+            if day.bodyweight:
+                bodyweight_data.append(day.bodyweight)
+            else:
+                bodyweight_data.append(0)
+            calories.append(day.calories)
+        min_bodyweight = min(bodyweight_data)-1
+        max_bodyweight = max(bodyweight_data) + 1
+        stepsize = (max_bodyweight-min_bodyweight)/6
     else:
         bodyweight = None
+        steps = bodyweight_data = calories = dates = min_bodyweight = max_bodyweight = stepsize = 0
 
     context = {
         'key': api_key,
@@ -131,7 +156,14 @@ def index(request):
         'fiber':totals[3],
         'calories': totals[4],
         'bodyweight': bodyweight,
-        'date': datetime.date.today()
+        'date': datetime.date.today(),
+        'steps_data': steps,
+        'bodyweight_data': bodyweight_data,
+        'calorie_data': calories,
+        'dates':dates,
+        'min_bodyweight': min_bodyweight,
+        'max_bodyweight':max_bodyweight,
+        'stepsize': stepsize
         }
  
     return render(request, 'tracking/index.html', context)
@@ -145,7 +177,7 @@ def addfoods(request):
     date = item['date']
     newitem = [[item['item'],item['protein'], item['carbs'], item['fat'], item['fiber'],item['cals'], int(item['serving'])]]
     meal, newmeal = Metrics.objects.get_or_create(account=user, date=date)
-    
+    print(date)
     if newmeal:
         meal.contents = newitem
     else:
@@ -191,6 +223,7 @@ def settings(request):
             'carb': user.carb_goal,
             'fat': user.fat_goal,
             'cals': user.calorie_goal,
+            'fiber': user.fiber_goal,
             'autostep':user.auto_update_steps,
             'autocopy':user.auto_copy_previous}
         return render(request, 'tracking/settings.html', context)
@@ -201,16 +234,19 @@ def settings(request):
         protein = request.POST.get('protein')
         fats = request.POST.get('fat')
         calories = request.POST.get('true-calories')
+        fiber = request.POST.get('fiber')
         user.carb_goal = carbs
         user.protein_goal = protein
         user.fat_goal = fats
         user.calorie_goal = calories
+        user.fiber_goal = fiber
         user.save()
         context = {
             'protein':user.protein_goal,
             'carb': user.carb_goal,
             'fat': user.fat_goal,
             'cals': user.calorie_goal,
+            'fiber': user.fiber_goal,
             'autostep':user.auto_update_steps,
             'autocopy':user.auto_copy_previous}
 
@@ -273,22 +309,29 @@ def steps(request):
 
 def viewdata(request):
     user = User.objects.get(id=request.user.id)
-    metrics = Metrics.objects.filter(account=user).order_by('date')
+    
+    join_date = user.date_joined
+    today = datetime.date.today() 
+    metrics = Metrics.objects.filter(account=user).filter(date__range=[join_date, today]).order_by('date')
     i = 1
     dates, bodyweight, steps, calories = [],[],[],[]
     
     for day in metrics:
         dates.append(day.date.strftime('%Y-%m-%d'))
+        print(day.bodyweight)
+        print(day.steps)
+        print(day.calories) 
         
-        bodyweight.append(day.bodyweight)
         if day.steps:
             steps.append(day.steps)
         else:
             steps.append(0)
+        if day.bodyweight:
+            bodyweight.append(day.bodyweight)
+        else:
+            bodyweight.append(0)
         calories.append(day.calories)
 
-    calories = [2500, 2800, 3000, 2700, 2750]
-    bodyweight = [187, 188.5, 191, 192, 192.4]
     context = {
         'metrics': metrics,
         'steps_data': steps,
@@ -301,6 +344,7 @@ def viewdata(request):
 def copyprevious(request):
     user = User.objects.get(id=request.user.id)
     today = datetime.date.today()
+    print(today) 
     todays_metrics, created = Metrics.objects.get_or_create(account=user, date=today)
     yesterday = today - datetime.timedelta(days=1)
     yesterdays_metrics, created = Metrics.objects.get_or_create(account=user, date=yesterday)
@@ -346,7 +390,7 @@ def removefood(request):
     
     meal.contents = newcontent
     meal.edited = True
-    #meal.save()
+    meal.save()
 
     return HttpResponseRedirect(reverse('index'))
 
@@ -377,4 +421,16 @@ def displayprevious(request):
 
 
     
+    return HttpResponse(json.dumps(response), content_type='application/json')
+    
+def copytotoday(request):
+    item = json.loads(request.body)
+    print(item['date'])
+    user = User.objects.get(id=request.user.id)
+    day_being_copied = Metrics.objects.get(account=user, date=item['date'])
+    day_copied_to = Metrics.objects.get(account=user, date = datetime.date.today())
+    day_copied_to.contents = day_being_copied.contents
+    print(day_copied_to.date, day_copied_to.contents)
+    day_copied_to.save()
+    response = {'response': 'based'}
     return HttpResponse(json.dumps(response), content_type='application/json')

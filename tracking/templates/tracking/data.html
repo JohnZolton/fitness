@@ -22,14 +22,7 @@
                     strokeColor: "rgba(220,220,220,1)",
                     pointColor: "rgba(200,122,20,1)",
             },
-            {
-                data: {{ calorie_data|safe }},
-                label: 'Calories'
-        },
-        {
-                data: {{ bodyweight_data|safe }},
-                label: 'Bodyweight'
-        }
+            
         ],
             labels: {{ dates|safe }}
           },
@@ -37,16 +30,59 @@
             responsive: true
           }
         };
-    
+    var bodyweight = {
+          type: 'line',
+          data: {
+            datasets: [
+                {
+                    data: {{ bodyweight_data|safe }},
+                    label: 'Bodyweight',
+                    fillColor: "rgba(0,0,0,0)",
+                    strokeColor: "rgba(220,220,220,1)",
+                    pointColor: "rgba(200,122,20,1)",
+            },
+            
+        ],
+            labels: {{ dates|safe }}
+          },
+          options: {
+            responsive: true
+          }
+        };
+
+        var calorie_data = {
+          type: 'line',
+          data: {
+            datasets: [
+                {
+                    data: {{ steps_data|safe }},
+                    label: 'Steps',
+                    fillColor: "rgba(0,0,0,0)",
+                    strokeColor: "rgba(220,220,220,1)",
+                    pointColor: "rgba(200,122,20,1)",
+            },
+            
+        ],
+            labels: {{ dates|safe }}
+          },
+          options: {
+            responsive: true
+          }
+        };
         window.onload = function() {
-          var ctx = document.getElementById('steps_chart').getContext('2d');
-          window.myPie = new Chart(ctx, config);
+          var ctx1 = document.getElementById('steps_chart').getContext('2d');
+          var ctx2 = document.getElementById('bodyweight_chart').getContext('2d');
+          var ctx3 = document.getElementById('calories_chart').getContext('2d');
+          window.myPie = new Chart(ctx1, config);
+          window.myPie = new Chart(ctx2, bodyweight);
+          window.myPie = new Chart(ctx3, calorie_data);
         };
     
       </script>
-    <canvas id="steps_chart" style="width:100%;max-width:700px">
+    <canvas id="steps_chart" style="width:100%;max-width:700px;max-height: 200px;"></canvas>
 
-    </canvas>
+    <canvas id="bodyweight_chart" style="width:100%;max-width:700px;max-height: 200px"></canvas>
+    <canvas id="calories_chart" style="width:100%;max-width:700p; max-height:200px"></canvas>
 
     {% else %}
     <div>Sign in</div>
