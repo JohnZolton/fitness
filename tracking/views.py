@@ -223,6 +223,7 @@ def settings(request):
             'carb': user.carb_goal,
             'fat': user.fat_goal,
             'cals': user.calorie_goal,
+            'fiber': user.fiber_goal,
             'autostep':user.auto_update_steps,
             'autocopy':user.auto_copy_previous}
         return render(request, 'tracking/settings.html', context)
@@ -233,16 +234,19 @@ def settings(request):
         protein = request.POST.get('protein')
         fats = request.POST.get('fat')
         calories = request.POST.get('true-calories')
+        fiber = request.POST.get('fiber')
         user.carb_goal = carbs
         user.protein_goal = protein
         user.fat_goal = fats
         user.calorie_goal = calories
+        user.fiber_goal = fiber
         user.save()
         context = {
             'protein':user.protein_goal,
             'carb': user.carb_goal,
             'fat': user.fat_goal,
             'cals': user.calorie_goal,
+            'fiber': user.fiber_goal,
             'autostep':user.auto_update_steps,
             'autocopy':user.auto_copy_previous}
 

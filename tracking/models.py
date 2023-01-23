@@ -8,6 +8,7 @@ class User(AbstractUser):
     carb_goal = models.IntegerField(default=0, null=True)
     fat_goal = models.IntegerField(default=0, null=True)
     calorie_goal = models.IntegerField(default=0, null=True)
+    fiber_goal = models.IntegerField(default=0, null=True)
     last_step_sync_date = models.DateField(default=None, null=True)
     auto_update_steps = models.BooleanField()
     auto_copy_previous = models.BooleanField()

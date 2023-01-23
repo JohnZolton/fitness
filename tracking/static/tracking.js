@@ -163,7 +163,8 @@ function changedisplay(today){
         let carb_goal = carb_total.attributes.data_goal.value
         let fat_goal = fat_total.attributes.data_goal.value
         let calorie_goal = calorie_total.attributes.data_goal.value
-        
+        let fiber_goal = fiber_total.attributes.data_goal.value
+
         new_total_protein = ans['total_protein']
         new_total_carb = ans['total_carb']
         new_total_fat= ans['total_fat']
@@ -173,8 +174,14 @@ function changedisplay(today){
         protein_total.innerText = `Protein: ${new_total_protein}/${protein_goal}`
         carb_total.innerText = `Carbs: ${new_total_carb}/${carb_goal}`
         fat_total.innerText = `Fat: ${new_total_fat}/${fat_goal}`
-        fiber_total.innerText = `Fiber: ${new_total_fiber}`
+        fiber_total.innerText = `Fiber: ${new_total_fiber}/${fiber_goal}`
         calorie_total.innerText = `Calories: ${new_total_cals}/${calorie_goal}`
+
+        document.getElementById('protein-progress').attributes.value.value = new_total_protein
+        document.getElementById('carb-progress').attributes.value.value = new_total_carb
+        document.getElementById('fat-progress').attributes.value.value = new_total_fat
+        document.getElementById('fiber-progress').attributes.value.value = new_total_fiber
+        document.getElementById('calorie-progress').attributes.value.value = new_total_cals
       });
 }
 
@@ -390,6 +397,11 @@ function addfood(){
       fiber_total.attributes.data_current.value = new_total_fiber
       calorie_total.attributes.data_current.value = new_total_cals
 
+        document.getElementById('protein-progress').attributes.value.value = new_total_protein
+        document.getElementById('carb-progress').attributes.value.value = new_total_carb
+        document.getElementById('fat-progress').attributes.value.value = new_total_fat
+        document.getElementById('fiber-progress').attributes.value.value = new_total_fiber
+        document.getElementById('calorie-progress').attributes.value.value = new_total_cals
     
     hideresults(document.getElementById('display-table'))
     document.getElementById('display-table').style.display = 'none'
@@ -483,6 +495,7 @@ function savechanges() {
     let carb_goal = carb_total.attributes.data_goal.value
     let fat_goal = fat_total.attributes.data_goal.value
     let calorie_goal = calorie_total.attributes.data_goal.value
+    let fiber_goal = fiber_total.attributes.data_goal.value
 
     let protein_current = protein_total.attributes.data_current.value
     let carb_current = carb_total.attributes.data_current.value
@@ -500,7 +513,7 @@ function savechanges() {
     protein_total.innerText = `Protein: ${new_total_protein}/${protein_goal}`
     carb_total.innerText = `Carbs: ${new_total_carb}/${carb_goal}`
     fat_total.innerText = `Fat: ${new_total_fat}/${fat_goal}`
-    fiber_total.innerText = `Fiber: ${new_total_fiber}`
+    fiber_total.innerText = `Fiber: ${new_total_fiber}/${fiber_goal}`
     calorie_total.innerText = `Calories: ${new_total_cals}/${calorie_goal}`
 
     protein_total.attributes.data_current.value = new_total_protein
@@ -508,6 +521,12 @@ function savechanges() {
     fat_total.attributes.data_current.value = new_total_fat
     fiber_total.attributes.data_current.value = new_total_fiber
     calorie_total.attributes.data_current.value = new_total_cals
+
+        document.getElementById('protein-progress').attributes.value.value = new_total_protein
+        document.getElementById('carb-progress').attributes.value.value = new_total_carb
+        document.getElementById('fat-progress').attributes.value.value = new_total_fat
+        document.getElementById('fiber-progress').attributes.value.value = new_total_fiber
+        document.getElementById('calorie-progress').attributes.value.value = new_total_cals
     let csrf = getcookie('csrftoken');
     fetch('editfoods', {
         method: 'POST',
@@ -636,6 +655,7 @@ function removeitem(){
       let carb_goal = carb_total.attributes.data_goal.value
       let fat_goal = fat_total.attributes.data_goal.value
       let calorie_goal = calorie_total.attributes.data_goal.value
+      let fiber_goal = fiber_total.attributes.data_goal.value
 
       let new_total_protein = parseInt(protein_current) - parseInt(protein_val)
       let new_total_carb = parseInt(carb_current) - parseInt(carb_val)
@@ -646,7 +666,7 @@ function removeitem(){
       protein_total.innerText = `Protein: ${new_total_protein}/${protein_goal}`
       carb_total.innerText = `Carbs: ${new_total_carb}/${carb_goal}`
       fat_total.innerText = `Fat: ${new_total_fat}/${fat_goal}`
-      fiber_total.innerText = `Fiber: ${new_total_fiber}`
+      fiber_total.innerText = `Fiber: ${new_total_fiber}/${fiber_goal}`
       calorie_total.innerText = `Calories: ${new_total_cals}/${calorie_goal}`
   
       protein_total.attributes.data_current.value = new_total_protein
@@ -654,6 +674,12 @@ function removeitem(){
       fat_total.attributes.data_current.value = new_total_fat
       fiber_total.attributes.data_current.value = new_total_fiber
       calorie_total.attributes.data_current.value = new_total_cals
+
+        document.getElementById('protein-progress').attributes.value.value = new_total_protein
+        document.getElementById('carb-progress').attributes.value.value = new_total_carb
+        document.getElementById('fat-progress').attributes.value.value = new_total_fat
+        document.getElementById('fiber-progress').attributes.value.value = new_total_fiber
+        document.getElementById('calorie-progress').attributes.value.value = new_total_cals
 }
 
 

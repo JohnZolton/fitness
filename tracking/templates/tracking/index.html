@@ -224,29 +224,29 @@
             </table>
             <div class="totals-container">
                 <div class="totals-child">
-                    <progress value="{{protein}}" max="{{user.protein_goal}}"></progress>
+                    <progress id='protein-progress' value="{{protein}}" max="{{user.protein_goal}}"></progress>
                     <div class="totals-item" id="total-protein" data_goal = '{{user.protein_goal}}' data_current="{{protein}}">Protein: {{protein}}/{{user.protein_goal}}</div>
                 </div>
                 <div class="totals-child">
-                    <progress value="{{carbs}}" max="{{user.carb_goal}}"></progress>
+                    <progress id='carb-progress' value="{{carbs}}" max="{{user.carb_goal}}"></progress>
                     <div class="totals-item" id="total-carbs" data_goal = '{{user.carb_goal}}'data_current="{{carbs}}">
                         Carbs: {{carbs}}/{{user.carb_goal}}
                     </div>
                 </div>
                 <div class="totals-child">
-                    <progress value="{{fats}}" max="{{user.fat_goal}}"></progress>
+                    <progress id='fat-progress' value="{{fats}}" max="{{user.fat_goal}}"></progress>
                     <div class="totals-item" id="total-fat" data_goal = '{{user.fat_goal}}'data_current="{{fats}}">
                         Fat: {{fats}}/{{user.fat_goal}}
                     </div>
                 </div>
                 <div class="totals-child">
-                    <progress value="{{fiber}}"></progress>
-                    <div class="totals-item" id="total-fiber" data_current="{{fiber}}">
-                    Fiber: {{fiber}}
+                    <progress id='fiber-progress' value="{{fiber}}" max="{{user.fiber_goal}}"></progress>
+                    <div class="totals-item" id="total-fiber" data_current="{{fiber}}" data_goal = '{{user.fiber_goal}}'>
+                    Fiber: {{fiber}}/{{user.fiber_goal}}
                     </div>
                 </div>
                 <div class="totals-child">
-                    <progress value="{{calories}}" max="{{user.calorie_goal}}"></progress>
+                    <progress id='calorie-progress' value="{{calories}}" max="{{user.calorie_goal}}"></progress>
                     <div class="totals-item" id="total-cals" data_goal = '{{user.calorie_goal}}'data_current="{{calories}}">
                     Calories: {{calories}}/{{user.calorie_goal}}
                     </div>
