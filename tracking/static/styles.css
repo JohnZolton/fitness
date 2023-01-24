@@ -1,17 +1,25 @@
 :root {
+}
+.darkmode{
   --backgroundcolor: #121212;
   --textcolor: white;
   --bordercolor: gray;
   --secondarybackground: #383737;
   --highlightcolor: #4b4b4b;
   --selectedcolor: #757575;
-  --buttoncolor: rgb(7, 5, 63);
+  --buttoncolor: rgb(42, 49, 104);
   --buttoncolorhover: rgb(60, 46, 118);
-  --color1: rgb(172, 59, 59);
-  --color2: rgb(50, 178, 174);
 }
-
-
+.lightmode{
+  --backgroundcolor: #dbd1d1;
+  --textcolor: rgb(0, 0, 0);
+  --bordercolor: gray;
+  --secondarybackground: #a0a0a0;
+  --highlightcolor: #ae7f7f;
+  --selectedcolor: #757575;
+  --buttoncolor: rgb(72, 71, 79);
+  --buttoncolorhover: rgb(60, 46, 118);
+}
 * { box-sizing: border-box; }
 body {
   font: 16px Arial;
