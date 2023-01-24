@@ -138,7 +138,9 @@ function changedisplay(today){
               <button id="${item}-remove" class="remove-button" value="${item}">remove</button>
             </td>`
       
-            document.getElementById("totals-table").appendChild(newDiv)
+            //document.getElementById("totals-table").appendChild(newDiv)
+            let row = document.getElementById("totals-table").getElementsByTagName('tbody')
+            row[0].appendChild(newDiv)
       
             let editbuttons = document.querySelectorAll('.edit-button')
             editbuttons.forEach(child => {
@@ -236,6 +238,7 @@ function closeall(){
 function search(event) {
     console.log(this.parentElement)
     hideresults(document.getElementById('display-table'))
+    closeall()
    
     let api = document.getElementById('key').value
     let url = 'https://api.nal.usda.gov/fdc/v1/foods/search?api_key='
@@ -344,7 +347,9 @@ function addfood(){
         <button id="${item}-remove" class="remove-button" value="${item}">remove</button>
       </td>`
 
-      document.getElementById("totals-table").appendChild(newDiv)
+     // document.getElementById("totals-table").appendChild(newDiv)
+      let row = document.getElementById("totals-table").getElementsByTagName('tbody')
+      row[0].appendChild(newDiv)
 
       let editbuttons = document.querySelectorAll('.edit-button')
       editbuttons.forEach(child => {
