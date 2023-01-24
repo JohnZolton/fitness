@@ -1,24 +1,24 @@
 :root {
 }
 .darkmode{
-  --backgroundcolor: #121212;
+  --backgroundcolor: #000000;
   --textcolor: white;
   --bordercolor: gray;
-  --secondarybackground: #383737;
-  --highlightcolor: #4b4b4b;
+  --secondarybackground: #150050;
+  --highlightcolor: #3F0071;
   --selectedcolor: #757575;
-  --buttoncolor: rgb(42, 49, 104);
-  --buttoncolorhover: rgb(60, 46, 118);
+  --buttoncolor: #fb2576;
+  --buttoncolorhover: #f85d98;
 }
 .lightmode{
-  --backgroundcolor: #dbd1d1;
+  --backgroundcolor: #FFE15D;
   --textcolor: rgb(0, 0, 0);
-  --bordercolor: gray;
-  --secondarybackground: #a0a0a0;
-  --highlightcolor: #ae7f7f;
+  --bordercolor: #F49D1A;
+  --secondarybackground: #F49D1A;
+  --highlightcolor: #DC3535;
   --selectedcolor: #757575;
-  --buttoncolor: rgb(72, 71, 79);
-  --buttoncolorhover: rgb(60, 46, 118);
+  --buttoncolor: #B01E68;
+  --buttoncolorhover: #b6487f;
 }
 * { box-sizing: border-box; }
 body {
