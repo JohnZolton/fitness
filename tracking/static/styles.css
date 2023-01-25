@@ -4,10 +4,10 @@
   --backgroundcolor: #000000;
   --textcolor: white;
   --bordercolor: gray;
-  --secondarybackground: #150050;
-  --highlightcolor: #3F0071;
+  --secondarybackground: #1d1b20;
+  --highlightcolor: #58505f;
   --selectedcolor: #757575;
-  --buttoncolor: #fb2576;
+  --buttoncolor: #802447;
   --buttoncolorhover: #f85d98;
 }
 .lightmode{
@@ -184,7 +184,7 @@ tbody tr:last-child {
 .table-swap {
   padding-left: 15px;
   padding-right: 15px;
-  padding-top: 10px;
+  padding-top: 7px;
 }
 
 .table-copy {
