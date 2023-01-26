@@ -9,7 +9,6 @@ urlpatterns = [
     path('settings', views.settings, name='settings'),
     path('bodyweight', views.bodyweight, name='bodyweight'),
     path('steps', views.steps, name='steps'),
-    path('viewdata', views.viewdata, name='viewdata'),
     path('addfoods', views.addfoods, name='addfoods'),
     path('editfoods', views.editfoods, name='editfoods'),
     path('copyprevious', views.copyprevious, name='copyprevious'),

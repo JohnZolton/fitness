@@ -51,6 +51,9 @@ input:focus{
   border: none;
 }
 
+input:hover{
+  background-color: var(--selectedcolor);
+}
 input[type=submit] {
   color: var(--textcolor);
 }
@@ -83,6 +86,7 @@ input[type=submit] {
 .flex-container {
   display: flex ;
   flex-direction: row;
+  flex: 1 2 200px;
   flex-wrap: wrap;
   justify-content: center;
 }
@@ -96,8 +100,7 @@ input[type=submit] {
 
 canvas {
   background: var(--secondarybackground);
-  margin: 20px;
-  padding:10px;
+  margin-bottom: 20px;
   border-radius: 10px;
   color: var(--textcolor);
   max-width: 500px;
@@ -105,7 +108,6 @@ canvas {
 table {
   background-color: var(--secondarybackground);
   padding: 10px;
-  margin: 10px;
   border-radius: 10px;
   overflow: hidden;
   border-collapse: collapse;
@@ -148,7 +150,6 @@ tbody tr:last-child {
   display: flex;
   width: 100%;
   border-radius: 10px;
-  border-radius: 10px;
   background-color: var(--secondarybackground);
   overflow: hidden;
 }
@@ -176,14 +177,11 @@ tbody tr:last-child {
   background-color: var(--secondarybackground);
   padding-left: 20px;
   border-radius: 10px;
-  margin-left: 10px;
+  margin-bottom: 10px;
   align-items: center;
-  margin-top: 20px;
 }
 
 .table-swap {
-  padding-left: 15px;
-  padding-right: 15px;
   padding-top: 7px;
 }
 
@@ -197,7 +195,7 @@ tbody tr:last-child {
 .totals-container{
   background-color: var(--secondarybackground);
   border-radius: 10px;
-  margin:10px;
+  margin-top:10px;
   width: fit-content;
 }
 
@@ -218,7 +216,7 @@ a{
 .add-foods-container{
   background-color: var(--secondarybackground);
   width: fit-content;
-  margin: 10px;
+  margin-top: 10px;
   border-radius: 10px;
   padding-left: 10px;
   
@@ -229,13 +227,13 @@ a{
 }
 
 button {
+  border: none;
   padding: 5px;
   color: var(--textcolor);
   background: var(--buttoncolor);
   border-radius: 5px;
   padding-left: 15px;
   padding-right: 15px;
-  border-color: black;
   margin: 4px;
   margin-bottom: 5px;
 }
