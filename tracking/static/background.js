@@ -1,8 +1,10 @@
 function changetheme(){
     if (localStorage.getItem('theme') === 'darkmode') {
         settheme('lightmode');
+        document.getElementById('switch').innerHTML = '&#x263E'
     } else {
         settheme('darkmode');
+        document.getElementById('switch').innerHTML = '&#x263C'
     }
 }
 
