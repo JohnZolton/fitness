@@ -17,4 +17,10 @@ urlpatterns = [
     path('removefood', views.removefood, name='removefood'),
     path('displayprevious', views.displayprevious, name='displayprevious'),
     path('copytotoday', views.copytotoday, name='copytotoday'),
+    path('checkout', views.checkout, name='checkout'),
+    path('create_checkout_session', views.create_checkout_session, name='create_checkout_session'),
+    path('success', views.success, name='success'),
+    path('cancel', views.cancel, name='cancel'),
+    path('webhook', views.webhook, name='webhook'),
+    path('manage', views.managesubscription, name='managesubscription')
 ]

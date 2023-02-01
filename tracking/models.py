@@ -10,8 +10,10 @@ class User(AbstractUser):
     calorie_goal = models.IntegerField(default=0, null=True)
     fiber_goal = models.IntegerField(default=0, null=True)
     last_step_sync_date = models.DateField(default=None, null=True)
-    auto_update_steps = models.BooleanField()
-    auto_copy_previous = models.BooleanField()
+    auto_update_steps = models.BooleanField(null=True)
+    auto_copy_previous = models.BooleanField(null=True)
+    is_subscribed = models.BooleanField(null=True)
+    customernumber = models.CharField(max_length= 50, null=True)
     
 
 class Metrics(models.Model):
@@ -27,3 +29,11 @@ class Metrics(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['account', 'date'], name='unique_day_metric')
         ]
+
+class Subscription(models.Model):
+    name = models.CharField(max_length=100)
+    price = models.IntegerField(1000)
+    subbed_user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name

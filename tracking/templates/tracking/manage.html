@@ -1,0 +1,15 @@
+
+{% extends "tracking/layout.html" %}
+
+{% block body %}
+<body>
+  <section>
+    <p>Manage subscrptions</p>
+  </section>
+  <form action="{% url 'managesubscription' %}" method="POST">
+    {% csrf_token %}
+    <button type="submit">Unsubscribe</button>
+  </form>
+  {{check}}
+</body>
+{% endblock %}

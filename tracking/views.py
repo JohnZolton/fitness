@@ -10,7 +10,8 @@ import json
 import datetime
 import keys
 import time
-
+import stripe
+import os
 
 
 from garminconnect import (
@@ -20,6 +21,9 @@ from garminconnect import (
     GarminConnectTooManyRequestsError,
 )
 api_key = keys.api_key
+stripe.api_key = keys.STRIPE_SECRET_KEY
+
+
 
 
 def login_view(request):
@@ -370,3 +374,75 @@ def copytotoday(request):
     day_copied_to.save()
     response = {'response': 'based'}
     return HttpResponse(json.dumps(response), content_type='application/json')
+
+def checkout(request):
+    return render(request, 'tracking/checkout.html')
+
+def create_checkout_session(request):
+    YOUR_DOMAIN = 'http://127.0.0.1:8000/tracking'
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            client_reference_id = request.user.id if request.user.is_authenticated else None,
+            line_items=[
+                {
+                    'price': 'price_1MWKrBA0pn7vugH4RQPyV8jE',
+                    'quantity': 1,
+                },
+            ],
+            mode='subscription',
+            success_url=YOUR_DOMAIN +
+            '/success',
+            cancel_url=YOUR_DOMAIN + '/cancel',
+        )
+        
+    except Exception as e:
+        print(e)
+        return "Server error", 500
+    return HttpResponseRedirect(checkout_session.url)
+
+def success(request):
+    return render(request, 'tracking/success.html')
+def cancel(request):
+    return render(request, 'tracking/cancel.html')
+
+@csrf_exempt
+def webhook(request):
+    payload = request.body
+    sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+    event = None
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, keys.STRIPE_WEBHOOK_SECRET
+        )
+
+    except ValueError as e:
+        # Invalid payload
+        return HttpResponse(status=400)
+
+    except stripe.error.SignatureVerificationError as e:
+        # Invalid signature
+        return HttpResponse(status=400)
+
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        data = json.loads(payload)
+        customernumber = data['data']['object']['subscription']
+        user_id = data['data']['object']['client_reference_id']
+        user = User.objects.get(id=user_id)
+        user.is_subscribed = True
+        user.customernumber = customernumber
+        print(user.customernumber)
+        user.save()
+    return HttpResponse(status=200)
+
+def managesubscription(request):
+    if request.method == 'GET':
+        return render(request, 'tracking/manage.html')
+    if request.method == 'POST':
+        user = User.objects.get(id=request.user.id)
+        user.is_subscribed = False
+        print(user.customernumber)
+        stripe.Subscription.delete(user.customernumber,)
+        user.save()
+        return render(request, 'tracking/manage.html', {'check':'unsub clicked'})
