@@ -22,5 +22,7 @@ urlpatterns = [
     path('success', views.success, name='success'),
     path('cancel', views.cancel, name='cancel'),
     path('webhook', views.webhook, name='webhook'),
-    path('manage', views.managesubscription, name='managesubscription')
+    path('manage', views.managesubscription, name='managesubscription'),
+
+    path('create-payment-intent', views.create_payment, name='create-payment-intent')
 ]

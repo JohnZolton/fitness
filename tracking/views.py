@@ -446,3 +446,23 @@ def managesubscription(request):
         stripe.Subscription.delete(user.customernumber,)
         user.save()
         return render(request, 'tracking/manage.html', {'check':'unsub clicked'})
+
+@csrf_exempt
+def create_payment(request):
+    try:
+        # Create a PaymentIntent with the order amount and currency
+        intent = stripe.PaymentIntent.create(
+            amount=1000,
+            currency='usd',
+            automatic_payment_methods={
+                'enabled': True,
+            },
+        )
+        response = {'clientSecret': intent['client_secret']}
+        print(response)
+        return HttpResponse(json.dumps(response), content_type='application/json')
+
+    except Exception as e:
+        return HttpResponse(json.dumps({
+            'error': str(e)
+        }), content_type='application/json')
