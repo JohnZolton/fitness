@@ -22,5 +22,6 @@ urlpatterns = [
     path('success', views.success, name='success'),
     path('cancel', views.cancel, name='cancel'),
     path('webhook', views.webhook, name='webhook'),
-    path('manage', views.managesubscription, name='managesubscription')
+    path('manage', views.managesubscription, name='managesubscription'),
+    path('create-portal-session', views.create_portal_session, name="create-portal-session")
 ]

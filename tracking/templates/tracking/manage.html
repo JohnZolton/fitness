@@ -4,12 +4,12 @@
 {% block body %}
 <body>
   <section>
-    <p>Manage subscrptions</p>
+    <p>Manage subscriptions</p>
   </section>
-  <form action="{% url 'managesubscription' %}" method="POST">
-    {% csrf_token %}
-    <button type="submit">Unsubscribe</button>
-  </form>
+    <form action="{% url 'create-portal-session' %}" method="POST">
+      {% csrf_token %}
+      <button id="checkout-and-portal-button" type="submit">Manage your subscription</button>
+    </form>
   {{check}}
 </body>
 {% endblock %}

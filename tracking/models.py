@@ -14,7 +14,7 @@ class User(AbstractUser):
     auto_copy_previous = models.BooleanField(null=True)
     is_subscribed = models.BooleanField(null=True)
     customernumber = models.CharField(max_length= 50, null=True)
-    
+    checkout_id = models.CharField(max_length=50, null=True)
 
 class Metrics(models.Model):
     account = models.ForeignKey(User, on_delete=models.CASCADE)
