@@ -394,7 +394,9 @@ def create_checkout_session(request):
             '/success',
             cancel_url=YOUR_DOMAIN + '/cancel',
         )
-        
+        user = User.objects.get(id=request.user.id)
+        user.checkout_id = checkout_session.id 
+        user.save()
     except Exception as e:
         print(e)
         return "Server error", 500
@@ -402,6 +404,7 @@ def create_checkout_session(request):
 
 def success(request):
     return render(request, 'tracking/success.html')
+
 def cancel(request):
     return render(request, 'tracking/cancel.html')
 
@@ -410,7 +413,6 @@ def webhook(request):
     payload = request.body
     sig_header = request.META['HTTP_STRIPE_SIGNATURE']
     event = None
-
     try:
         event = stripe.Webhook.construct_event(
             payload, sig_header, keys.STRIPE_WEBHOOK_SECRET
@@ -423,16 +425,15 @@ def webhook(request):
     except stripe.error.SignatureVerificationError as e:
         # Invalid signature
         return HttpResponse(status=400)
-
+    print(event)
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
         data = json.loads(payload)
         customernumber = data['data']['object']['subscription']
         user_id = data['data']['object']['client_reference_id']
         user = User.objects.get(id=user_id)
-        user.is_subscribed = True
+        user.is_subscribed = data['plan']['active']
         user.customernumber = customernumber
-        print(user.customernumber)
         user.save()
     return HttpResponse(status=200)
 
@@ -442,27 +443,17 @@ def managesubscription(request):
     if request.method == 'POST':
         user = User.objects.get(id=request.user.id)
         user.is_subscribed = False
-        print(user.customernumber)
         stripe.Subscription.delete(user.customernumber,)
         user.save()
-        return render(request, 'tracking/manage.html', {'check':'unsub clicked'})
+        return render(request, 'tracking/manage.html', {'check':'unsubscribed'})
 
-@csrf_exempt
-def create_payment(request):
-    try:
-        # Create a PaymentIntent with the order amount and currency
-        intent = stripe.PaymentIntent.create(
-            amount=1000,
-            currency='usd',
-            automatic_payment_methods={
-                'enabled': True,
-            },
+def create_portal_session(request):
+    if request.method == 'POST':
+        user = User.objects.get(id=request.user.id)
+        return_url = "http://127.0.0.1:8000/tracking/manage"
+        checkout_session = stripe.checkout.Session.retrieve(user.checkout_id)
+        portalSession = stripe.billing_portal.Session.create(
+            customer = checkout_session.customer,
+            return_url = return_url
         )
-        response = {'clientSecret': intent['client_secret']}
-        print(response)
-        return HttpResponse(json.dumps(response), content_type='application/json')
-
-    except Exception as e:
-        return HttpResponse(json.dumps({
-            'error': str(e)
-        }), content_type='application/json')
+    return HttpResponseRedirect(portalSession.url)

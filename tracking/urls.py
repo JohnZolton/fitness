@@ -23,6 +23,5 @@ urlpatterns = [
     path('cancel', views.cancel, name='cancel'),
     path('webhook', views.webhook, name='webhook'),
     path('manage', views.managesubscription, name='managesubscription'),
-
-    path('create-payment-intent', views.create_payment, name='create-payment-intent')
+    path('create-portal-session', views.create_portal_session, name="create-portal-session")
 ]
