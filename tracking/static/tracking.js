@@ -275,6 +275,8 @@ function search(event) {
 }
 
 function addfood(){
+    let logged_in = document.getElementById("is_logged_in").attributes.value.value
+    if (logged_in == "True") {
     let serving = prompt('Serving size (g): ')
     var siblings = n => [...n.parentElement.children].filter(c=>c!=n)
     let info = siblings(this)
@@ -358,6 +360,7 @@ function addfood(){
     hideresults(document.getElementById('display-table'))
     document.getElementById('display-table').style.display = 'none'
     document.getElementById('food').value = ''
+    }
 }
 
 function editfoods() {

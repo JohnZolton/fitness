@@ -24,14 +24,14 @@
                 <a href="{% url 'settings' %}">Settings</a>
             </div>
             <div class="toolbar-item">
-                <a href="{% url 'logout' %}">Logout</a>
-            </div>
-            <div class="toolbar-item">
             {% if user.is_subscribed %}
                 <a href="{% url 'managesubscription' %}">Manage Subscription</a>
             {% else %}
                 <a href="{% url 'checkout' %}">Upgrade to Premium</a>
             {% endif %}
+            </div>
+            <div class="toolbar-item">
+                <a href="{% url 'logout' %}">Logout</a>
             </div>
             {% else %}
             <div class="toolbar-item">

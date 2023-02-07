@@ -118,7 +118,7 @@ def index(request):
 
         join_date = cur_user.date_joined
         metrics = Metrics.objects.filter(account=cur_user).filter(date__range=[join_date, yesterday]).order_by('date')
-        
+        message = ""
         dates, bodyweight_data, steps, calories = [],[],[],[]
         for day in metrics:
             dates.append(day.date.strftime('%Y-%m-%d'))
@@ -139,7 +139,7 @@ def index(request):
     else:
         bodyweight = None
         steps = bodyweight_data = calories = dates = min_bodyweight = max_bodyweight = stepsize = 0
-
+        message = "Please create an account or sign in"
     context = {
         'key': api_key,
         'meals': res,
@@ -156,6 +156,7 @@ def index(request):
         'dates':dates,
         'min_bodyweight': min_bodyweight,
         'max_bodyweight':max_bodyweight,
+        'message': message, 
         'stepsize': stepsize
         }
  

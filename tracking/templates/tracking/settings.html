@@ -2,7 +2,7 @@
 
 {% block body %}
 
-
+<div style="margin: 20px;">
     <h2>Settings</h2>
     {% if user.is_authenticated %}
         <h3>Nutrition Goals</h3>
@@ -10,8 +10,7 @@
             {% csrf_token %}
             <div>
                 <label>Protein</label>
-                <input type="number" id='protein' name="protein" value="{{protein}}">
-            </div>
+                <input type="number" id='protein' name="protein" value="{{protein}}"> </div>
             <div>
                 <label>Carbs</label>
                 <input type="number" id="carb" name="carb" value="{{carb}}">
@@ -38,7 +37,7 @@
             </div>
             <div>
               <label>Garmin password:</label>
-            <input type="password" placeholder="" name="password">  
+            <input type="password" placeholder="" name="password"> 
             </div>
             <div>
                <label>Until how many days ago?</label>
@@ -75,7 +74,7 @@
     {% else %}
     <div>Sign in</div>
     {% endif %}
-
+</div> 
     {% load static %}
     <script type = 'text/javascript' src="{% static 'settings.js' %}"></script>
 {% endblock %}
