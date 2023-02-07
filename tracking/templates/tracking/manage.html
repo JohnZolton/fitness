@@ -1,0 +1,17 @@
+
+{% extends "tracking/layout.html" %}
+
+{% block body %}
+<body>
+  <div style="text-align: center;">
+  <section>
+    <h3>Manage subscriptions</h3>
+  </section>
+    <form action="{% url 'create-portal-session' %}" method="POST">
+      {% csrf_token %}
+      <button id="checkout-and-portal-button" type="submit">Manage your subscription</button>
+    </form>
+</div>
+  {{check}}
+</body>
+{% endblock %}

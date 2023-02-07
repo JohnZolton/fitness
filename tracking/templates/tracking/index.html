@@ -168,7 +168,6 @@
     </div>
     
     <div class="flex-child">
-
         <div class="table-bar">
             <div style="display:flex">
             <div class="table-swap"><button id="prev">Prev</button></div>
@@ -267,11 +266,14 @@
 </div>
 
         <input type="hidden" id="key" value="{{key}}">
+        <input type="hidden" id="is_logged_in" value="{{user.is_authenticated}}">
 <div id="display-table"></div>
+        <div>{{message}}</div>
         {% load static %}
     <script type = 'text/javascript' src="{% static 'tracking.js' %}"></script>
     
         {% endblock %}
     </div>
+
 </div>
 </div>
