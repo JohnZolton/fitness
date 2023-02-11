@@ -5,13 +5,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
 from django.db import IntegrityError
 from .models import *
-import requests
 import json
 import datetime
 import keys
 import time
 import stripe
-import os
 
 
 from garminconnect import (
@@ -399,7 +397,6 @@ def create_checkout_session(request):
         user.checkout_id = checkout_session.id 
         user.save()
     except Exception as e:
-        print(e)
         return "Server error", 500
     return HttpResponseRedirect(checkout_session.url)
 
@@ -426,7 +423,6 @@ def webhook(request):
     except stripe.error.SignatureVerificationError as e:
         # Invalid signature
         return HttpResponse(status=400)
-    print(event)
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
         data = json.loads(payload)

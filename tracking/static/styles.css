@@ -1,5 +1,3 @@
-:root {
-}
 .darkmode{
   --backgroundcolor: #000000;
   --textcolor: white;
@@ -77,9 +75,6 @@ input[type=submit] {
 .autocomplete-items div:hover {
   /*when hovering an item:*/
   background-color: var(--selectedcolor);
-}
-.autocomplete-active {
-  /*when navigating through the items using the arrow keys:*/
 }
 
 

@@ -4,11 +4,11 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     id = models.AutoField(primary_key=True)
-    protein_goal = models.IntegerField(default=0, null=True)
-    carb_goal = models.IntegerField(default=0, null=True)
-    fat_goal = models.IntegerField(default=0, null=True)
-    calorie_goal = models.IntegerField(default=0, null=True)
-    fiber_goal = models.IntegerField(default=0, null=True)
+    protein_goal = models.IntegerField(default=160, null=True)
+    carb_goal = models.IntegerField(default=232, null=True)
+    fat_goal = models.IntegerField(default=48, null=True)
+    calorie_goal = models.IntegerField(default=2000, null=True)
+    fiber_goal = models.IntegerField(default=32, null=True)
     last_step_sync_date = models.DateField(default=None, null=True)
     auto_update_steps = models.BooleanField(null=True)
     auto_copy_previous = models.BooleanField(null=True)
