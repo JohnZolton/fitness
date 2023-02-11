@@ -46,12 +46,11 @@ function copytotoday(){
         }),
       })
       .then(response => response.json())
-      .then(ans => { console.log(ans['response'])})}
+      }
 
 
 function displayprevious(){
     today.setTime(today.getTime() - dateOffset);
-    console.log(today)
     changedisplay(today)
     document.getElementById('date').innerText = today.toLocaleDateString('en-US', {
         day : 'numeric',
@@ -62,11 +61,7 @@ function displayprevious(){
 }
 
 function displaynext(){
-    console.log('first: ' + today.toLocaleDateString('en-US', {
-        day:'numeric', month: 'short', year:'numeric'
-    }))
     today.setTime(today.getTime() + dateOffset);
-    console.log('second: ' + today)
     changedisplay(today)
 
     document.getElementById('date').innerText = today.toLocaleDateString('en-US', {
@@ -111,9 +106,7 @@ function changedisplay(today){
       })
       .then(response => response.json())
       .then(ans => {
-        //console.log(ans['response'])
         for (let i = 0; i < ans['response'].length; i++){
-            //console.log(ans['response'][i])
             let item = ans['response'][i][0]
             let protein_val = ans['response'][i][1]
             let carb_val = ans['response'][i][2]
@@ -140,7 +133,6 @@ function changedisplay(today){
               <button id="${item}-remove" class="remove-button" value="${item}">remove</button>
             </td>`
       
-            //document.getElementById("totals-table").appendChild(newDiv)
             let row = document.getElementById("totals-table").getElementsByTagName('tbody')
             row[0].appendChild(newDiv)
       
@@ -219,7 +211,6 @@ function closeall(){
 }
 
 function search(event) {
-    console.log(this.parentElement)
     hideresults(document.getElementById('display-table'))
     closeall()
    
@@ -233,23 +224,17 @@ function search(event) {
     .then((data) => {
         for (let i = 0; i < data['foods'].length; i++)
         {
-            //console.log(data['foods'][i]['foodNutrients'])
             let nutrients = ['203', '204', '205', '208', '291']
             let fooddata = data['foods'][i]['foodNutrients']
-            //console.log(data['foods'][i])
             let protein = 0
             let carbs = 0
             let fats = 0
             let cals = 0
             let fiber = 0
             let food_id = data['foods'][i]['finalFoodInputFoods']
-            food_id.forEach(element => {
-                //console.log(element['foodDescription'] + 'id: ' + element['id'])
-            })
 
             fooddata.forEach(element => {
                 if (nutrients.includes(element['nutrientNumber'])){
-                    //console.log(element['nutrientName'], element['value'], element['unitName'])
                     if (element['nutrientNumber']=='203'){protein = element['value']}
                     if (element['nutrientNumber']=='204'){carbs = element['value']}
                     if (element['nutrientNumber']=='205'){fats = element['value']}
@@ -313,7 +298,6 @@ function addfood(){
         }),
       })
       .then(response => response.json())
-      .then(ans => console.log(ans));
       
       let newDiv = document.createElement("tr");
       newDiv.innerHTML = `
@@ -332,7 +316,6 @@ function addfood(){
         <button id="${item}-remove" class="remove-button" value="${item}">remove</button>
       </td>`
 
-     // document.getElementById("totals-table").appendChild(newDiv)
       let row = document.getElementById("totals-table").getElementsByTagName('tbody')
       row[0].appendChild(newDiv)
 
@@ -360,7 +343,7 @@ function addfood(){
     hideresults(document.getElementById('display-table'))
     document.getElementById('display-table').style.display = 'none'
     document.getElementById('food').value = ''
-    }
+    } else {alert("please create an account or sign in")}
 }
 
 function editfoods() {
@@ -410,7 +393,6 @@ function changevalues() {
 function savechanges() {
     let id = this.attributes.value.value
 
-    console.log(this.parentElement.parentElement.children)
     let protein = this.parentElement.parentElement.children.item(1)
     let carbs = this.parentElement.parentElement.children.item(2)
     let fats = this.parentElement.parentElement.children.item(3)
@@ -430,7 +412,6 @@ function savechanges() {
     let new_fat = fats.innerText
     let new_fiber = fiber.innerText
     let new_cals = cals.innerText
-    //console.log(serving)
     let new_serving = serving.firstElementChild.value
     
     this.style.display = 'none'
@@ -445,7 +426,6 @@ function savechanges() {
     let new_total_fiber = parseInt(new_fiber) - parseInt(old_fiber)
     let new_total_cals = parseInt(new_cals) - parseInt(old_cals)
     updatetotals(new_total_protein, new_total_carb, new_total_fat, new_total_fiber, new_total_cals)
-    console.log(new_total_protein, new_total_carb, new_total_fat, new_total_fiber, new_total_cals)
     let current_day = new Date(today -tzoffset).toISOString().slice(0,10)
     let csrf = getcookie('csrftoken');
     fetch('editfoods', {
@@ -469,11 +449,9 @@ function savechanges() {
         }),
       })
       .then(response => response.json())
-      .then(ans => console.log(ans));
 }
 
 function updatevalues(info){
-    console.log('updatevalues fired')
     let id = this.parentElement.firstElementChild.innerText
     let newserving = this.firstChild.value
 
@@ -504,15 +482,12 @@ function updatevalues(info){
 }
 
 function removeselection(){
-    console.log(this.parentElement.parentElement)
     this.parentElement.parentElement.remove()
     
     return false
 }
 
 function hideresults(parent) {
-    console.log(parent)
-    console.log(this)
     while (parent.firstChild) {
         parent.removeChild(parent.firstChild)
     }
@@ -556,7 +531,6 @@ function removeitem(){
         }),
       })
       .then(response => response.json())
-      .then(ans => console.log(ans));
       this.parentElement.parentElement.remove()
 
       let new_total_protein = -parseInt(protein_val)
@@ -585,7 +559,6 @@ function getcookie(name) {
 }
 
 function updatetotals(protein, carb, fat, fiber, calories){
-    console.log(protein, carb, fat, fiber, calories)
         
     let protein_total = document.getElementById('total-protein')
     let carb_total = document.getElementById('total-carbs')
